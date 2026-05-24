@@ -4,54 +4,89 @@ import matplotlib.pyplot as plt
 import io
 
 # Global layout tuning for centralized web app visibility
-st.set_page_config(page_title="Commercial XAI Concrete Engineering", layout="centered")
+st.set_page_config(page_title="Commercialized XAI Engine", layout="centered")
+
+# FULL APPLICATION DEFINITION BRANDING CONSTANT
+APP_BRANDING_NAME = (
+    "Commercialized Explainable AI (XAI) Engine for Concrete Compressive Strength Prediction "
+    "using XGBoost and SHAP with a Dual-Tier Monetized Paywall Gateway for Industry Professionals and Students"
+)
 
 # =========================================================================
-# SIDEBAR NAVIGATION: CUSTOMER ASSISTANCE CHATBOT & FEEDBACK SYSTEM
+# SIDEBAR NAVIGATION: UPGRADED SMART SUPPORT CHATBOT & FEEDBACK SYSTEM
 # =========================================================================
 with st.sidebar:
-    st.header("🤖 Customer Support Desk")
-    st.write("Have a question about your concrete mix evaluation or payment status? Type below:")
+    st.header("🤖 Intelligent Customer Support")
+    st.write("Ask our smart assistant any questions regarding concrete mix design parameters, SHAP values, billing processing, or passkey issues.")
     
-    # Simple interactive local chatbot memory layout
+    # Initialize message list state if empty
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role": "assistant", "content": "Hello! I am your VG Concrete Assistant. How can I help you with your structural analytics or billing today?"}]
+        st.session_state.messages = [
+            {"role": "assistant", "content": "Hello! I am your dedicated XAI Engine virtual assistant. How can I guide you through our concrete estimations or billing gateways today?"}
+        ]
         
+    # Render previous interactions seamlessly
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
         
-    if chat_user_input := st.chat_input("Type support question here..."):
+    # Listen for user inputs
+    if chat_user_input := st.chat_input("Type your question here..."):
         st.session_state.messages.append({"role": "user", "content": chat_user_input})
         st.chat_message("user").write(chat_user_input)
         
-        # Automated responses mapped for high quality consumer support routing
-        lowered_input = chat_user_input.lower()
-        if "pay" in lowered_input or "payment" in lowered_input or "money" in lowered_input or "failed" in lowered_input:
-            reply = "If your payment was processed but your unlock key hasn't arrived, please file an objection instantly using the feedback card in our main footer or email our helpdesk at billing@yourdomain.com."
-        elif "m40" in lowered_input or "strength" in lowered_input or "cement" in lowered_input:
-            reply = "Our machine learning model estimates performance based on your exact batch weights. Unlocking our SHAP report exposes why features increase or decrease structural yield."
+        # Immediate High-Satisfaction Intelligent Routing Engine
+        query = chat_user_input.lower()
+        
+        if any(w in query for w in ["student", "id", "college", "upload", "card", "academic"]):
+            reply = (
+                "💡 **Student Validation Protocol:** To access the ₹50 tier, you must first upload your valid college identity card "
+                "in the 'Commercial Analytics Access Gateway' section. Once a file is uploaded, the secure Razorpay button will appear automatically."
+            )
+        elif any(w in query for w in ["pay", "payment", "objection", "dispute", "money", "charged", "razorpay"]):
+            reply = (
+                "💳 **Billing & Dispute Resolution:** If your account was charged but your key did not unlock the features, please submit a "
+                "formal objection using the direct email link in our website footer or email **billing@yourdomain.com** right now. We resolve all ticket escalations within 1 hour."
+            )
+        elif any(w in query for w in ["passkey", "code", "unlock", "key", "vg40"]):
+            reply = (
+                "🔑 **Feature Activation:** After clearing your transaction on Razorpay, look for your secure verification code. "
+                "For demonstration testing or pre-approved accounts, enter the manual master code **VG40** into the input tray to reveal your analysis."
+            )
+        elif any(w in query for w in ["shap", "explanation", "xgboost", "predict", "chart", "bar"]):
+            reply = (
+                "🔬 **Explainable AI Information:** Our XGBoost model extracts composite non-linear patterns. The SHAP bar chart explicitly calculates "
+                "how many Megapascals (MPa) each component adds or subtracts from your baseline mixture recipe."
+            )
+        elif any(w in query for w in ["cement", "slag", "fly ash", "water", "m40", "strength"]):
+            reply = (
+                "🏗️ **Structural Mix Insight:** High cement and blast furnace slag values push your strength upward. "
+                "Fly ash substitution introduces early-age hydration lag but helps long-term performance. Try adjusting raw values in section 1 to see the live metrics update!"
+            )
         else:
-            reply = "Thank you for reaching out! Your query has been logged. For immediate technical review or validation, you can drop a line to our system supervisor."
+            reply = (
+                "👋 Thank you for your inquiry! Your request has been logged. If you require specialized assistance or engineering support, "
+                "feel free to reach out directly to Vaishnavi Ghosare at billing@yourdomain.com."
+            )
             
         st.session_state.messages.append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write(reply)
 
     st.markdown("---")
-    st.header("📝 App Experience Feedback")
-    user_review = st.text_area("Share your user experience or suggest custom feature additions:", placeholder="Type feedback comments here...")
+    st.header("📝 Performance Feedback")
+    user_review = st.text_area("Share your experience or suggest optimizations:", placeholder="Provide feedback comments here...")
     if st.button("Submit Feedback & Logs"):
         if user_review:
-            st.toast("✅ Thank you! Your feedback has been safely submitted to our engineering team.", icon="🎉")
+            st.toast("✅ Thank you! Your feedback has been logged by the dashboard engine.", icon="🎉")
         else:
             st.error("Please enter a short comment before submitting.")
 
 # =========================================================================
-# MAIN DASHBOARD AREA - PUBLIC INTERFACE FRAMEWORK
+# MAIN DASHBOARD AREA - PUBLIC APPLICATION LAYOUT
 # =========================================================================
 col_header, col_logo = st.columns([8, 2])
 with col_header:
-    st.title("🏗️ AI-Based SHAP Concrete Engineering Platform")
-    st.caption("🔬 Repository: Concrete-Commercial-XAI-Frameworks / Core Research Engine")
+    st.title("🏗️ Commercialized XAI Concrete Engine")
+    st.write(f"**Current Architecture:** {APP_BRANDING_NAME}")
 with col_logo:
     st.markdown("<h2 style='text-align: right; color: #1E3A8A; margin-top:15px;'>VG</h2>", unsafe_allow_html=True)
 
@@ -76,7 +111,7 @@ with inp_col2:
 
 st.markdown("---")
 
-# Algorithmic calculation processing
+# Analytical Model Simulation Math Setup
 base_28d = 35.86 + 7.8801 + 6.5424 + 1.5131 + 1.2618 - 1.2437 + 0.6528 + 0.1636
 cement_factor = (cement / 380.0)
 water_factor = (165.0 / water)
@@ -97,7 +132,7 @@ st.metric(label="📆 Estimated 28-Day Compressive Strength", value=f"{pred_28d:
 st.markdown("---")
 
 # =========================================================================
-# COMMERCIAL PAYWALL GATEWAY WITH PROGRAMMATIC CRITERIA ENFORCEMENT
+# COMMERCIAL PAYWALL GATEWAY WITH INPUT GATE CRITERIA
 # =========================================================================
 st.subheader("💳 3. Commercial Analytics Access Gateway")
 st.error("🔒 The complete XAI feature explanations, multi-day curing charts (7/14 days), and printable verification documents are locked.")
@@ -111,23 +146,23 @@ with pay_col1:
     """)
     user_tier = st.radio("Select Your Account Tier:", ["Industrial Professional (₹2000)", "Academic Student (₹50)"])
 
-# Programmatic verification gate logic
+# Programmatic validation logic gate check
 can_proceed_to_payment = True
 
 if user_tier == "Academic Student (₹50)":
     st.markdown("---")
-    st.warning("🎓 **Academic Verification Required:** You must upload a valid college ID before the payment link opens.")
+    st.warning("🎓 **Academic Validation Required:** You must upload a valid college ID before the payment options release.")
     uploaded_student_id = st.file_uploader("📤 Upload Valid College ID Card (PDF/JPEG/PNG):", type=["pdf", "jpg", "jpeg", "png"])
     
     if uploaded_student_id is None:
         can_proceed_to_payment = False
         st.info("💡 Waiting for your student verification document to activate the secure checkout gate...")
 
-# Render payment workflow only if verification rules match completely
+# Render transactional portals if constraints match
 if can_proceed_to_payment:
     with pay_col2:
         st.markdown("**💳 Secure Razorpay Checkout Portal:**")
-        st.info("Click below to clear your configuration fee securely in a new tab. After finalizing, enter your transaction passkey to activate analytics.")
+        st.info("Click below to clear your configuration fee securely on Razorpay's verified payment routing network.")
         
         st.link_button(
             label="🚀 Pay Securely via Razorpay", 
@@ -138,7 +173,7 @@ if can_proceed_to_payment:
     st.write("After clearing your payment processing window, type your corporate verification code below to unlock the secure model layer:")
     access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment passkey here...")
 else:
-    # Completely freeze access inputs if parameters are breached
+    # Completely lock access code entry block if conditions fail
     st.text_input("🔑 Enter Access Passkey:", value="", type="password", disabled=True, help="Upload your college identity document first to release the input tray.")
 
 # =========================================================================
@@ -192,16 +227,17 @@ if can_proceed_to_payment and access_key == "VG40":
     plt.savefig(img_buf, format='png', dpi=300, bbox_inches='tight')
     img_buf.seek(0)
 
+    # UNLOCKED SECTIONS: A4 Export Engine utilizing absolute branding text values
     def generate_pdf_report(dataframe, figure_bytes):
         plt.rcParams['font.family'] = 'serif'
         plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
         fig = plt.figure(figsize=(8.27, 11.69))
         
-        fig.text(0.08, 0.95, "Repository: Concrete-Commercial-XAI-Frameworks", fontsize=9, color='#4A5568', fontstyle='italic')
-        fig.text(0.92, 0.95, "VG ENGINE", fontsize=12, fontweight='bold', color='#1E3A8A', ha='right')
+        fig.text(0.08, 0.96, f"Engine: {APP_BRANDING_NAME[:90]}...", fontsize=7.5, color='#4A5568', fontstyle='italic')
+        fig.text(0.92, 0.96, "VG SYSTEM", fontsize=11, fontweight='bold', color='#1E3A8A', ha='right')
         fig.text(0.08, 0.94, "_"*95, fontsize=10, color='#CBD5E1')
         
-        fig.text(0.08, 0.90, "AI-BASED SHAP CONCRETE INTERPRETABILITY REPORT", fontsize=18, fontweight='bold', color='#1E3A8A')
+        fig.text(0.08, 0.90, "AI-BASED SHAP CONCRETE INTERPRETABILITY REPORT", fontsize=16, fontweight='bold', color='#1E3A8A')
         fig.text(0.08, 0.87, "AUTHOR: VAISHNAVI GHOSARE (STRUCTURAL ENGINEER)", fontsize=11, fontweight='bold', color='#0F172A')
         
         fig.text(0.08, 0.84, "1. Executive Structural Batch & Prediction Summary", fontsize=12, fontweight='bold', color='#0F172A')
@@ -309,7 +345,6 @@ comp_col1, comp_col2, comp_col3 = st.columns(3)
 with comp_col1:
     st.markdown("**🚨 Payment Objections & Contact**")
     st.caption("Contact Lead: Vaishnavi Ghosare")
-    # Live mailto connection allows instant desktop email application startup on click
     st.markdown("<a href='mailto:billing@yourdomain.com?subject=Payment Objection Ticket'>📧 Email Billing Support</a>", unsafe_allow_html=True)
     st.caption("Fulfillment Role: Structural Lead")
 
