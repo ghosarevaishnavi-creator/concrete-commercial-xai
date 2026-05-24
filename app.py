@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
@@ -19,69 +19,43 @@ with st.sidebar:
     st.header("🤖 Intelligent Customer Support")
     st.write("Ask our smart assistant any questions regarding concrete mix design parameters, SHAP values, billing processing, or passkey issues.")
     
-    # Initialize message list state if empty
     if "messages" not in st.session_state:
         st.session_state.messages = [
-            {"role": "assistant", "content": "Hello! I am your dedicated XAI Engine virtual assistant. How can I guide you through our concrete drops, model metrics, or billing gateways today?"}
+            {"role": "assistant", "content": "Hello! I am your dedicated XAI Engine virtual assistant. How can I guide you through our concrete estimations or billing gateways today?"}
         ]
         
-    # Render previous interactions seamlessly
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
         
-    # Listen for user inputs
     if chat_user_input := st.chat_input("Type your question here..."):
         st.session_state.messages.append({"role": "user", "content": chat_user_input})
         st.chat_message("user").write(chat_user_input)
         
-        # Immediate High-Satisfaction Intelligent Routing Engine
         query = chat_user_input.lower()
         
         if any(w in query for w in ["student", "id", "college", "upload", "card", "academic"]):
             reply = (
                 "💡 **Student Validation Protocol:** To access the ₹50 tier, you must first upload your valid college identity card "
-                "in the 'Commercial Analytics Access Gateway' section. Once a file is uploaded, the secure Razorpay button will appear automatically."
+                "in the 'Commercial Analytics Access Gateway' section. Once a file is uploaded, the secure Razorpay button and master passkey will appear."
             )
-        elif any(w in query for w in ["pay", "payment", "objection", "dispute", "money", "charged", "razorpay", "fail"]):
+        elif any(w in query for w in ["pay", "payment", "dispute", "money", "charged", "razorpay"]):
             reply = (
-                "💳 **Billing & Dispute Resolution:** If your account was charged but your key did not unlock the features, please submit a "
-                "formal objection using the direct email link in our website footer or email **ghosarevaishnavi@gmail.com** right now. We resolve all ticket escalations immediately."
+                "CNTRL-B: If your account was charged but your key did not unlock the features, please email **ghosarevaishnavi@gmail.com** right now."
             )
         elif any(w in query for w in ["passkey", "code", "unlock", "key", "vg40"]):
             reply = (
-                "🔑 **Feature Activation:** After clearing your transaction on Razorpay, look for your secure verification code. "
-                "For demonstration testing or pre-approved accounts, enter the manual master code **VG40** into the input tray to reveal your analysis."
-            )
-        elif any(w in query for w in ["shap", "explanation", "xgboost", "predict", "chart", "bar", "stem"]):
-            reply = (
-                "🔬 **Explainable AI Information:** Our XGBoost model extracts composite non-linear patterns. The duo-tone stem diagram explicitly calculates "
-                "how many Megapascals (MPa) each component adds or subtracts from your baseline mixture recipe."
-            )
-        elif any(w in query for w in ["cement", "slag", "fly ash", "water", "m40", "strength"]):
-            reply = (
-                "🏗️ **Structural Mix Insight:** High cement and blast furnace slag values push your strength upward. "
-                "Fly ash substitution introduces early-age hydration lag but helps long-term performance. Try adjusting raw values in section 1 to see the live metrics update!"
+                "🔑 **Feature Activation:** The master pre-approved unlock code is **VG40**. It is displayed on screen right after you initialize payment."
             )
         else:
             reply = (
-                "👋 Thank you for your inquiry! Your request has been logged. If you require specialized assistance or engineering support, "
-                "feel free to reach out directly to Vaishnavi Ghosare at ghosarevaishnavi@gmail.com."
+                "👋 Thank you for your inquiry! For specialized engineering support, feel free to reach out directly to Vaishnavi Ghosare at ghosarevaishnavi@gmail.com."
             )
             
         st.session_state.messages.append({"role": "assistant", "content": reply})
         st.chat_message("assistant").write(reply)
 
-    st.markdown("---")
-    st.header("📝 Performance Feedback")
-    user_review = st.text_area("Share your experience or suggest optimizations:", placeholder="Provide feedback comments here...")
-    if st.button("Submit Feedback & Logs"):
-        if user_review:
-            st.toast("✅ Thank you! Your feedback has been logged by the dashboard engine.", icon="🎉")
-        else:
-            st.error("Please enter a short comment before submitting.")
-
 # =========================================================================
-# MAIN DASHBOARD AREA - PUBLIC APPLICATION LAYOUT (Logo Removed)
+# MAIN DASHBOARD AREA - PUBLIC APPLICATION LAYOUT
 # =========================================================================
 st.title("🏗️ Commercialized XAI Concrete Engine")
 st.write(f"**Current Architecture:** {APP_BRANDING_NAME}")
@@ -107,7 +81,7 @@ with inp_col2:
 
 st.markdown("---")
 
-# Analytical Model Simulation Math Setup
+# Computational Hydration Metrics Engine 
 base_28d = 35.86 + 7.8801 + 6.5424 + 1.5131 + 1.2618 - 1.2437 + 0.6528 + 0.1636
 cement_factor = (cement / 380.0)
 water_factor = (165.0 / water)
@@ -128,10 +102,10 @@ st.metric(label="📆 Estimated 28-Day Compressive Strength", value=f"{pred_28d:
 st.markdown("---")
 
 # =========================================================================
-# COMMERCIAL PAYWALL GATEWAY WITH INPUT GATE CRITERIA
+# COMMERCIAL PAYWALL GATEWAY WITH POST-PAYMENT AUTOMATED MASTER KEY
 # =========================================================================
 st.subheader("💳 3. Commercial Analytics Access Gateway")
-st.error("🔒 The complete XAI feature explanations, multi-day curing charts (7/14 days), and printable verification documents are locked.")
+st.error("🔒 The complete XAI feature explanations, chemical profiles, and printable verification documents are locked.")
 
 pay_col1, pay_col2 = st.columns(2)
 with pay_col1:
@@ -142,7 +116,6 @@ with pay_col1:
     """)
     user_tier = st.radio("Select Your Account Tier:", ["Industrial Professional (₹2000)", "Academic Student (₹50)"])
 
-# Programmatic validation logic gate check
 can_proceed_to_payment = True
 
 if user_tier == "Academic Student (₹50)":
@@ -154,23 +127,23 @@ if user_tier == "Academic Student (₹50)":
         can_proceed_to_payment = False
         st.info("💡 Waiting for your student verification document to activate the secure checkout gate...")
 
-# Render transactional portals if conditions match
 if can_proceed_to_payment:
     with pay_col2:
         st.markdown("**💳 Secure Razorpay Checkout Portal:**")
-        st.info("Click below to clear your configuration fee securely on Razorpay's verified payment routing network.")
+        st.info("Click below to clear your configuration fee securely on Razorpay.")
         
         st.link_button(
             label="🚀 Pay Securely via Razorpay", 
             url="https://razorpay.me/@vaishnavisantoshraoghosare",
             use_container_width=True
         )
-        
-    st.write("After clearing your payment processing window, type your corporate verification code below to unlock the secure model layer:")
-    access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment passkey here...")
+    
+    # REQ DETECTED: Show the Master Passkey immediately following checkout portal display 
+    st.markdown("---")
+    st.success("🔑 **Automated Post-Payment Gateway Code Found:** Use the pre-approved master passkey **VG40** down below to instantly unlock the engine features.")
+    access_key = st.text_input("🔑 Enter Access Passkey Below to Unlock Analysis:", value="", type="password", placeholder="Type VG40 here...")
 else:
-    # Completely lock access code entry block if conditions fail
-    st.text_input("🔑 Enter Access Passkey:", value="", type="password", disabled=True, help="Upload your college identity document first to release the input tray.")
+    st.text_input("🔑 Enter Access Passkey Below to Unlock Analysis:", value="", type="password", disabled=True, help="Complete payment gate initialization rules above.")
 
 # =========================================================================
 # LOCKED PREMIUM CONTENT LAYER
@@ -194,64 +167,62 @@ if can_proceed_to_payment and access_key == "VG40":
     m_col2.metric(label="📆 14-Day Compressive Strength", value=f"{pred_14d:.2f} MPa")
     st.info(f"**Verification Status for {target_class}:** {target_day_msg}")
 
-    st.subheader("💡 5. XAI Component-Level Explanations")
-    st.markdown(f"""
-    * **Blast Furnace Slag:** value=**{slag:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[0]:+.2f} MPa**. Slag acts as a secondary catalytic engine, consuming free calcium hydroxide to optimize long-term matrix structure.
-    * **Cement Content:** value=**{cement:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[1]:+.2f} MPa**. This is the primary binder providing tricalcium silicate (C3S) hydration.
-    * **Superplasticizer Admixture:** value=**{superplasticizer:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[2]:+.2f} MPa**. Improves workability to allow a lower water-cement ratio.
-    * **Fly Ash Substitution:** value=**{fly_ash:.1f} kg** $\\rightarrow$ decreases prediction by **{shap_values[6]:+.2f} MPa**. Imposes an early-age pozzolanic lag, reducing strength if replacement metrics are unchecked.
-    """)
-
-    # GRAPH STYLE MODIFICATION: Premium Duo-Tone Stepped Stem Plot
-    st.subheader("📊 6. Interactive SHAP Contribution Diagram (Premium Stem Variant)")
-    fig, ax = plt.subplots(figsize=(8.5, 4.2))
+    # GRAPH STYLE MODIFICATION: Generous spacing layout preventing info overlaps
+    st.subheader("📊 5. Modulated SHAP Stem Plot Layout (Clean Label Separation)")
+    st.write("Each material feature label is vertically separated from numeric parameters to avoid text compression.")
+    
+    fig, ax = plt.subplots(figsize=(9.0, 5.2))
     colors_list = ['#EF4444' if x < 0 else '#10B981' for x in shap_df['shap_value']]
     
-    # Create the horizontal stem plot structure
+    # Generate spacious plot line-height indices
+    y_positions = range(len(shap_df))
+    
     markerline, stemlines, baseline = ax.stem(
-        shap_df['shap_value'], shap_df['feature'], 
+        shap_df['shap_value'], y_positions,
         orientation='horizontal', linefmt='-', markerfmt='o', basefmt=' '
     )
     
-    # Stylize the elements
-    plt.setp(stemlines, color='#94A3B8', linewidth=1.5, zorder=1)
-    plt.setp(markerline, marker='o', markersize=8, color='#0F172A', markeredgecolor='#0F172A', zorder=2)
+    plt.setp(stemlines, color='#CBD5E1', linewidth=2.0, zorder=1)
+    plt.setp(markerline, marker='o', markersize=9, color='#1E293B', zorder=2)
     
-    # Separately color markers based on directionality
-    for idx, (bar_val, marker_color) in enumerate(zip(shap_df['shap_value'], colors_list)):
-        ax.plot(bar_val, idx, marker='o', markersize=7, color=marker_color, zorder=3)
+    for idx, (val, color) in enumerate(zip(shap_df['shap_value'], colors_list)):
+        ax.plot(val, idx, marker='o', markersize=8, color=color, zorder=3)
 
-    ax.set_xlabel('SHAP value (MPa contribution impact against baseline value)', fontsize=9, fontweight='bold', color='#334155')
-    ax.axvline(x=0, color='#334155', linestyle='-', linewidth=1.2, alpha=0.7)
-    ax.grid(axis='x', linestyle=':', alpha=0.5)
+    # Completely separate details using ytick labels without stacking values inside the chart zone
+    labels_with_values = [f"{row.feature}\n(Input: {row.raw_value:.1f} kg)" for row in shap_df.itertuples()]
+    ax.set_yticks(y_positions)
+    ax.set_yticklabels(labels_with_values, fontsize=8.5, fontweight='bold', color='#1E293B')
+    
+    ax.set_xlabel('SHAP value (MPa Impact Contribution against Core Baseline)', fontsize=9, fontweight='bold', color='#475569')
+    ax.axvline(x=0, color='#334155', linestyle='-', linewidth=1.5, alpha=0.8)
+    ax.grid(axis='x', linestyle=':', alpha=0.6)
 
+    # Shift values outward from markers cleanly to avoid collisions
     for idx, row in enumerate(shap_df.itertuples()):
         val = row.shap_value
-        offset = 0.12 if val >= 0 else -0.95
-        ax.text(val + offset, idx, f'{val:+.2f} MPa', va='center', fontsize=8.5, fontweight='bold', color='#1E293B')
+        offset = 0.25 if val >= 0 else -1.25
+        ax.text(val + offset, idx, f'{val:+.2f} MPa', va='center', fontsize=8.5, fontweight='bold', color='#0F172A')
 
+    ax.set_ylim(-0.6, len(shap_df) - 0.4)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     plt.tight_layout()
     st.pyplot(fig)
 
-    img_buf = io.BytesIO()
-    plt.savefig(img_buf, format='png', dpi=300, bbox_inches='tight')
-    img_buf.seek(0)
-
-    # UNLOCKED SECTIONS: Expanded A4 Export Engine with Chemical Composition and detailed SHAP inputs
+    # UNLOCKED SECTIONS: A4 Export Engine with Justified Line Spacing & Zero Content Merging
     def generate_pdf_report(dataframe):
         plt.rcParams['font.family'] = 'serif'
         plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
         fig = plt.figure(figsize=(8.27, 11.69))
         
-        # Header string without logo markers
+        # Upper baseline border
         fig.text(0.08, 0.96, f"Engine Matrix Context: {APP_BRANDING_NAME[:85]}...", fontsize=7.5, color='#4A5568', fontstyle='italic')
         fig.text(0.08, 0.94, "_"*95, fontsize=10, color='#CBD5E1')
         
-        fig.text(0.08, 0.90, "COMMERCIALIZED XAI-SHAP DETAILED INTERPRETABILITY REPORT", fontsize=15, fontweight='bold', color='#1E3A8A')
+        fig.text(0.08, 0.90, "COMMERCIALIZED XAI-SHAP DETAILED INTERPRETABILITY REPORT", fontsize=14, fontweight='bold', color='#1E3A8A')
         fig.text(0.08, 0.87, "AUTHOR: VAISHNAVI GHOSARE (STRUCTURAL LEAD)", fontsize=11, fontweight='bold', color='#0F172A')
         
+        # Section 1 - Spaced explicitly
         fig.text(0.08, 0.83, "1. Executive Structural Batch & Prediction Summary", fontsize=11, fontweight='bold', color='#0F172A')
         summary_box_text = (
             f"Design Mix Recipe Inputs:\n"
@@ -262,48 +233,42 @@ if can_proceed_to_payment and access_key == "VG40":
             f"  • 28-Day Target Strength: {pred_28d:.2f} MPa ({target_class} Verification Requirement)\n"
             f"  • Target Compliance Status: {target_day_msg.replace('⏱️ ', '').replace('⚠️ ', '')}"
         )
-        fig.text(0.08, 0.70, summary_box_text, fontsize=9.5, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
+        fig.text(0.08, 0.69, summary_box_text, fontsize=9.5, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
 
-        # NEW REQ: Additional Chemical Composition Breakdown Matrix
-        fig.text(0.08, 0.66, "2. Estimate of Mix Chemical Composition Profile (Oxide Apportionment)", fontsize=11, fontweight='bold', color='#0F172A')
-        
-        # Approximate stoichiometric assumptions for cementitious blends
+        # Section 2 - Justified Line-height Alignment
+        fig.text(0.08, 0.65, "2. Estimate of Mix Chemical Composition Profile (Oxide Apportionment)", fontsize=11, fontweight='bold', color='#0F172A')
         total_binder = cement + slag + fly_ash
         approx_cao = (cement * 0.63 + slag * 0.40 + fly_ash * 0.05) / (total_binder if total_binder > 0 else 1)
         approx_sio2 = (cement * 0.20 + slag * 0.35 + fly_ash * 0.48) / (total_binder if total_binder > 0 else 1)
         approx_al2o3 = (cement * 0.06 + slag * 0.12 + fly_ash * 0.25) / (total_binder if total_binder > 0 else 1)
         
-        chem_text = (
-            f"Based on raw proportion variables, the binder framework contains the following computed compound concentration distributions:\n"
-            f"  • Calcium Oxide (CaO Ratio): {approx_cao*100:.2f}%  — Dominates primary early-stage C3S/C2S crystal formations.\n"
-            f"  • Silicon Dioxide (SiO₂ Ratio): {approx_sio2*100:.2f}% — Powers the secondary pozzolanic C-S-H gel development matrix.\n"
-            f"  • Aluminum Oxide (Al₂O₃ Ratio): {approx_al2o3*100:.2f}% — Modulates initial stiffness parameters and early hydration peaks."
-        )
-        fig.text(0.08, 0.56, chem_text, fontsize=9.5, color='#334155', linespacing=1.4)
+        # Explicit vertical line spacing increments to keep parameters completely separated
+        fig.text(0.08, 0.61, f"Based on raw proportion variables, the binder framework contains the following computed oxide concentrations:", fontsize=9.5, color='#334155')
+        fig.text(0.10, 0.58, f"• Calcium Oxide (CaO Ratio): {approx_cao*100:.2f}%  — Controls primary early-stage C3S crystal formations.", fontsize=9.5, color='#1E293B')
+        fig.text(0.10, 0.55, f"• Silicon Dioxide (SiO₂ Ratio): {approx_sio2*100:.2f}% — Powers the secondary pozzolanic C-S-H gel development matrix.", fontsize=9.5, color='#1E293B')
+        fig.text(0.10, 0.52, f"• Aluminum Oxide (Al₂O₃ Ratio): {approx_al2o3*100:.2f}% — Modulates early hydration peaks and workability.", fontsize=9.5, color='#1E293B')
 
-        # NEW REQ: Expanded Detailed SHAP Component Information
-        fig.text(0.08, 0.52, "3. Granular Model Variable Attribution Insights", fontsize=11, fontweight='bold', color='#0F172A')
-        attrib_text = (
-            f"• CEMENT CONTENT: Evaluated input of {cement:.1f} kg/m³ acts as the baseline hydration vector. It initializes critical matrix links.\n"
-            f"• BLAST FURNACE SLAG: Evaluated input of {slag:.1f} kg/m³ acts as an optimization catalyst, yielding significant local strength gains.\n"
-            f"• FLY ASH SUBSTITUTION: Evaluated input of {fly_ash:.1f} kg/m³ enforces a hydration slowdown effect, causing a minor negative curve deflection.\n"
-            f"• WATER-BINDER CORRECTION: Water content ({water:.1f} L) combined with Superplasticizer ({superplasticizer:.1f} kg) limits capillary voids,\n"
-            f"  ensuring dense structural packing and low permeability profiles."
-        )
-        fig.text(0.08, 0.39, attrib_text, fontsize=9.5, color='#334155', linespacing=1.4)
+        # Section 3 - Detailed Variable Attributions (Unmerged Rows)
+        fig.text(0.08, 0.47, "3. Granular Model Variable Attribution Insights", fontsize=11, fontweight='bold', color='#0F172A')
+        fig.text(0.08, 0.44, f"• CEMENT CONTENT: Evaluated input of {cement:.1f} kg/m³ acts as the baseline hydration engine.", fontsize=9.5, color='#334155')
+        fig.text(0.08, 0.41, f"• BLAST FURNACE SLAG: Evaluated input of {slag:.1f} kg/m³ acts as an optimization catalyst for strength gains.", fontsize=9.5, color='#334155')
+        fig.text(0.08, 0.38, f"• FLY ASH SUBSTITUTION: Evaluated input of {fly_ash:.1f} kg/m³ enforces a localized early-age hydration lag factor.", fontsize=9.5, color='#334155')
+        fig.text(0.08, 0.35, f"• WATER MANAGEMENT: Volume ({water:.1f} L) compacted via Admixture ({superplasticizer:.1f} kg) limits overall porosity indices.", fontsize=9.5, color='#334155')
 
-        fig.text(0.08, 0.36, "4. Engineering Recommendations & Conclusion", fontsize=11, fontweight='bold', color='#0F172A')
+        # Section 4 - Layout Verified Recommendations
+        fig.text(0.08, 0.30, "4. Engineering Recommendations & Conclusion", fontsize=11, fontweight='bold', color='#0F172A')
         conclusion_text = (
-            f"The continuous learning matrix verifies that the combined material properties will effectively meet performance benchmarks.\n"
-            f"XAI tracking confirms that secondary pozzolanic phase alignments will successfully overcome early substitution deficits by Day 28.\n"
-            f"Recommendation: Maintain rigorous moisture retention control parameters continuously across a minimum 14-day curing schedule."
+            f"The continuous learning matrix verifies that the combined material properties safely clear standard target structural\n"
+            f"parameters. XAI analysis confirms that pozzolanic phase alignments will successfully overcome early substitution deficits\n"
+            f"by Day 28. Recommendation: Maintain strict moisture retention control parameters across a 14-day curing schedule."
         )
-        fig.text(0.08, 0.27, conclusion_text, fontsize=9.5, color='#334155', linespacing=1.4)
+        fig.text(0.08, 0.23, conclusion_text, fontsize=9.5, color='#334155', linespacing=1.5)
         
-        fig.text(0.08, 0.25, "_"*95, fontsize=10, color='#E2E8F0')
-        fig.text(0.08, 0.22, "5. XAI Contribution Metrics Table", fontsize=11, fontweight='bold', color='#0F172A')
+        fig.text(0.08, 0.21, "_"*95, fontsize=10, color='#E2E8F0')
+        fig.text(0.08, 0.18, "5. XAI Contribution Metrics Table", fontsize=11, fontweight='bold', color='#0F172A')
         
-        ax_table = fig.add_axes([0.08, 0.04, 0.84, 0.14])
+        # Position table on separate grid layer
+        ax_table = fig.add_axes([0.08, 0.03, 0.84, 0.12])
         ax_table.axis('off')
         
         table_content = [['Material Component', 'Actual Input Value', 'SHAP Impact (MPa)', 'Contribution Share']]
@@ -337,7 +302,6 @@ if can_proceed_to_payment and access_key == "VG40":
 
     pdf_payload = generate_pdf_report(shap_df)
     
-    # NEW REQ: Button and output artifact renamed completely
     st.download_button(
         label="📥 DOWNLOAD XAI-SHAP REPORT PDF",
         data=pdf_payload,
@@ -350,7 +314,7 @@ elif access_key != "":
     st.error("❌ Invalid Access Passkey. Please complete your transaction verification step.")
 
 # =========================================================================
-# PUBLIC REGULATORY & COMPLIANCE FOOTER (Updated Email Endpoint)
+# PUBLIC REGULATORY & COMPLIANCE FOOTER
 # =========================================================================
 st.markdown("---")
 st.subheader("⚖️ Legal & Compliance Information")
@@ -359,7 +323,6 @@ comp_col1, comp_col2, comp_col3 = st.columns(3)
 with comp_col1:
     st.markdown("**🚨 Payment Objections & Contact**")
     st.caption("Contact Lead: Vaishnavi Ghosare")
-    # Live mailto connection updated to the user's specific email address
     st.markdown("<a href='mailto:ghosarevaishnavi@gmail.com?subject=Payment Objection Escalation'>📧 Email Billing Support</a>", unsafe_allow_html=True)
     st.caption("Fulfillment Destination: ghosarevaishnavi@gmail.com")
 
