@@ -1,4 +1,4 @@
- import streamlit as st
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
@@ -40,7 +40,7 @@ with st.sidebar:
             )
         elif any(w in query for w in ["pay", "payment", "dispute", "money", "charged", "razorpay"]):
             reply = (
-                "CNTRL-B: If your account was charged but your key did not unlock the features, please email **ghosarevaishnavi@gmail.com** right now."
+                "💳 **Billing & Dispute Resolution:** If your account was charged but your key did not unlock the features, please email **ghosarevaishnavi@gmail.com** right now."
             )
         elif any(w in query for w in ["passkey", "code", "unlock", "key", "vg40"]):
             reply = (
@@ -104,7 +104,7 @@ st.markdown("---")
 # =========================================================================
 # COMMERCIAL PAYWALL GATEWAY WITH POST-PAYMENT AUTOMATED MASTER KEY
 # =========================================================================
-st.subheader("💳 3. Commercial Analytics Access Gateway")
+st.subheader("🔑 3. Commercial Analytics Access Gateway")
 st.error("🔒 The complete XAI feature explanations, chemical profiles, and printable verification documents are locked.")
 
 pay_col1, pay_col2 = st.columns(2)
@@ -138,12 +138,11 @@ if can_proceed_to_payment:
             use_container_width=True
         )
     
-    # REQ DETECTED: Show the Master Passkey immediately following checkout portal display 
     st.markdown("---")
     st.success("🔑 **Automated Post-Payment Gateway Code Found:** Use the pre-approved master passkey **VG40** down below to instantly unlock the engine features.")
     access_key = st.text_input("🔑 Enter Access Passkey Below to Unlock Analysis:", value="", type="password", placeholder="Type VG40 here...")
 else:
-    st.text_input("🔑 Enter Access Passkey Below to Unlock Analysis:", value="", type="password", disabled=True, help="Complete payment gate initialization rules above.")
+    st.text_input("🔑 Enter Access Passkey Below to Unlock Analysis:", value="", type="password", disabled=True)
 
 # =========================================================================
 # LOCKED PREMIUM CONTENT LAYER
@@ -169,12 +168,9 @@ if can_proceed_to_payment and access_key == "VG40":
 
     # GRAPH STYLE MODIFICATION: Generous spacing layout preventing info overlaps
     st.subheader("📊 5. Modulated SHAP Stem Plot Layout (Clean Label Separation)")
-    st.write("Each material feature label is vertically separated from numeric parameters to avoid text compression.")
     
     fig, ax = plt.subplots(figsize=(9.0, 5.2))
     colors_list = ['#EF4444' if x < 0 else '#10B981' for x in shap_df['shap_value']]
-    
-    # Generate spacious plot line-height indices
     y_positions = range(len(shap_df))
     
     markerline, stemlines, baseline = ax.stem(
@@ -188,7 +184,6 @@ if can_proceed_to_payment and access_key == "VG40":
     for idx, (val, color) in enumerate(zip(shap_df['shap_value'], colors_list)):
         ax.plot(val, idx, marker='o', markersize=8, color=color, zorder=3)
 
-    # Completely separate details using ytick labels without stacking values inside the chart zone
     labels_with_values = [f"{row.feature}\n(Input: {row.raw_value:.1f} kg)" for row in shap_df.itertuples()]
     ax.set_yticks(y_positions)
     ax.set_yticklabels(labels_with_values, fontsize=8.5, fontweight='bold', color='#1E293B')
@@ -197,7 +192,6 @@ if can_proceed_to_payment and access_key == "VG40":
     ax.axvline(x=0, color='#334155', linestyle='-', linewidth=1.5, alpha=0.8)
     ax.grid(axis='x', linestyle=':', alpha=0.6)
 
-    # Shift values outward from markers cleanly to avoid collisions
     for idx, row in enumerate(shap_df.itertuples()):
         val = row.shap_value
         offset = 0.25 if val >= 0 else -1.25
@@ -209,21 +203,26 @@ if can_proceed_to_payment and access_key == "VG40":
     plt.tight_layout()
     st.pyplot(fig)
 
-    # UNLOCKED SECTIONS: A4 Export Engine with Justified Line Spacing & Zero Content Merging
+    # UNLOCKED SECTIONS: A4 Export Engine with Dynamic Line Spacing & Robust Top-Down Positioning
     def generate_pdf_report(dataframe):
         plt.rcParams['font.family'] = 'serif'
         plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
         fig = plt.figure(figsize=(8.27, 11.69))
         
-        # Upper baseline border
+        # Upper baseline border decoration
         fig.text(0.08, 0.96, f"Engine Matrix Context: {APP_BRANDING_NAME[:85]}...", fontsize=7.5, color='#4A5568', fontstyle='italic')
         fig.text(0.08, 0.94, "_"*95, fontsize=10, color='#CBD5E1')
         
-        fig.text(0.08, 0.90, "COMMERCIALIZED XAI-SHAP DETAILED INTERPRETABILITY REPORT", fontsize=14, fontweight='bold', color='#1E3A8A')
-        fig.text(0.08, 0.87, "AUTHOR: VAISHNAVI GHOSARE (STRUCTURAL LEAD)", fontsize=11, fontweight='bold', color='#0F172A')
+        fig.text(0.08, 0.91, "COMMERCIALIZED XAI-SHAP DETAILED INTERPRETABILITY REPORT", fontsize=13, fontweight='bold', color='#1E3A8A')
+        fig.text(0.08, 0.88, "AUTHOR: VAISHNAVI GHOSARE (STRUCTURAL LEAD)", fontsize=10, fontweight='bold', color='#0F172A')
         
-        # Section 1 - Spaced explicitly
-        fig.text(0.08, 0.83, "1. Executive Structural Batch & Prediction Summary", fontsize=11, fontweight='bold', color='#0F172A')
+        # Start top-down coordinate processing cursor to track line spacing dynamically
+        current_y = 0.84
+        
+        # Section 1 - Executive Summary Box
+        fig.text(0.08, current_y, "1. Executive Structural Batch & Prediction Summary", fontsize=11, fontweight='bold', color='#0F172A')
+        current_y -= 0.13
+        
         summary_box_text = (
             f"Design Mix Recipe Inputs:\n"
             f"  • Cement Content: {cement:.1f} kg/m³        • Blast Furnace Slag: {slag:.1f} kg/m³       • Fly Ash: {fly_ash:.1f} kg/m³\n"
@@ -233,42 +232,60 @@ if can_proceed_to_payment and access_key == "VG40":
             f"  • 28-Day Target Strength: {pred_28d:.2f} MPa ({target_class} Verification Requirement)\n"
             f"  • Target Compliance Status: {target_day_msg.replace('⏱️ ', '').replace('⚠️ ', '')}"
         )
-        fig.text(0.08, 0.69, summary_box_text, fontsize=9.5, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
+        fig.text(0.08, current_y, summary_box_text, fontsize=9, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
 
-        # Section 2 - Justified Line-height Alignment
-        fig.text(0.08, 0.65, "2. Estimate of Mix Chemical Composition Profile (Oxide Apportionment)", fontsize=11, fontweight='bold', color='#0F172A')
+        # Section 2 - Chemical Profiles (Safely Dropped Lower)
+        current_y -= 0.04
+        fig.text(0.08, current_y, "2. Estimate of Mix Chemical Composition Profile (Oxide Apportionment)", fontsize=11, fontweight='bold', color='#0F172A')
+        
         total_binder = cement + slag + fly_ash
         approx_cao = (cement * 0.63 + slag * 0.40 + fly_ash * 0.05) / (total_binder if total_binder > 0 else 1)
         approx_sio2 = (cement * 0.20 + slag * 0.35 + fly_ash * 0.48) / (total_binder if total_binder > 0 else 1)
         approx_al2o3 = (cement * 0.06 + slag * 0.12 + fly_ash * 0.25) / (total_binder if total_binder > 0 else 1)
         
-        # Explicit vertical line spacing increments to keep parameters completely separated
-        fig.text(0.08, 0.61, f"Based on raw proportion variables, the binder framework contains the following computed oxide concentrations:", fontsize=9.5, color='#334155')
-        fig.text(0.10, 0.58, f"• Calcium Oxide (CaO Ratio): {approx_cao*100:.2f}%  — Controls primary early-stage C3S crystal formations.", fontsize=9.5, color='#1E293B')
-        fig.text(0.10, 0.55, f"• Silicon Dioxide (SiO₂ Ratio): {approx_sio2*100:.2f}% — Powers the secondary pozzolanic C-S-H gel development matrix.", fontsize=9.5, color='#1E293B')
-        fig.text(0.10, 0.52, f"• Aluminum Oxide (Al₂O₃ Ratio): {approx_al2o3*100:.2f}% — Modulates early hydration peaks and workability.", fontsize=9.5, color='#1E293B')
+        current_y -= 0.03
+        fig.text(0.08, current_y, f"Based on raw proportion variables, the binder framework contains the following computed oxide concentrations:", fontsize=9, color='#334155')
+        
+        current_y -= 0.025
+        fig.text(0.10, current_y, f"• Calcium Oxide (CaO Ratio): {approx_cao*100:.2f}%  — Controls primary early-stage C3S crystal formations.", fontsize=9, color='#1E293B')
+        current_y -= 0.025
+        fig.text(0.10, current_y, f"• Silicon Dioxide (SiO₂ Ratio): {approx_sio2*100:.2f}% — Powers the secondary pozzolanic C-S-H gel development matrix.", fontsize=9, color='#1E293B')
+        current_y -= 0.025
+        fig.text(0.10, current_y, f"• Aluminum Oxide (Al₂O₃ Ratio): {approx_al2o3*100:.2f}% — Modulates early hydration peaks and workability.", fontsize=9, color='#1E293B')
 
-        # Section 3 - Detailed Variable Attributions (Unmerged Rows)
-        fig.text(0.08, 0.47, "3. Granular Model Variable Attribution Insights", fontsize=11, fontweight='bold', color='#0F172A')
-        fig.text(0.08, 0.44, f"• CEMENT CONTENT: Evaluated input of {cement:.1f} kg/m³ acts as the baseline hydration engine.", fontsize=9.5, color='#334155')
-        fig.text(0.08, 0.41, f"• BLAST FURNACE SLAG: Evaluated input of {slag:.1f} kg/m³ acts as an optimization catalyst for strength gains.", fontsize=9.5, color='#334155')
-        fig.text(0.08, 0.38, f"• FLY ASH SUBSTITUTION: Evaluated input of {fly_ash:.1f} kg/m³ enforces a localized early-age hydration lag factor.", fontsize=9.5, color='#334155')
-        fig.text(0.08, 0.35, f"• WATER MANAGEMENT: Volume ({water:.1f} L) compacted via Admixture ({superplasticizer:.1f} kg) limits overall porosity indices.", fontsize=9.5, color='#334155')
+        # Section 3 - Detailed Variable Attributions
+        current_y -= 0.04
+        fig.text(0.08, current_y, "3. Granular Model Variable Attribution Insights", fontsize=11, fontweight='bold', color='#0F172A')
+        
+        current_y -= 0.025
+        fig.text(0.08, current_y, f"• CEMENT CONTENT: Evaluated input of {cement:.1f} kg/m³ acts as the baseline hydration engine.", fontsize=9, color='#334155')
+        current_y -= 0.025
+        fig.text(0.08, current_y, f"• BLAST FURNACE SLAG: Evaluated input of {slag:.1f} kg/m³ acts as an optimization catalyst for strength gains.", fontsize=9, color='#334155')
+        current_y -= 0.025
+        fig.text(0.08, current_y, f"• FLY ASH SUBSTITUTION: Evaluated input of {fly_ash:.1f} kg/m³ enforces a localized early-age hydration lag factor.", fontsize=9, color='#334155')
+        current_y -= 0.025
+        fig.text(0.08, current_y, f"• WATER MANAGEMENT: Volume ({water:.1f} L) compacted via Admixture ({superplasticizer:.1f} kg) limits overall porosity indices.", fontsize=9, color='#334155')
 
-        # Section 4 - Layout Verified Recommendations
-        fig.text(0.08, 0.30, "4. Engineering Recommendations & Conclusion", fontsize=11, fontweight='bold', color='#0F172A')
+        # Section 4 - Concluding Recommendations
+        current_y -= 0.04
+        fig.text(0.08, current_y, "4. Engineering Recommendations & Conclusion", fontsize=11, fontweight='bold', color='#0F172A')
+        
+        current_y -= 0.05
         conclusion_text = (
             f"The continuous learning matrix verifies that the combined material properties safely clear standard target structural\n"
             f"parameters. XAI analysis confirms that pozzolanic phase alignments will successfully overcome early substitution deficits\n"
             f"by Day 28. Recommendation: Maintain strict moisture retention control parameters across a 14-day curing schedule."
         )
-        fig.text(0.08, 0.23, conclusion_text, fontsize=9.5, color='#334155', linespacing=1.5)
+        fig.text(0.08, current_y, conclusion_text, fontsize=9, color='#334155', linespacing=1.4)
         
-        fig.text(0.08, 0.21, "_"*95, fontsize=10, color='#E2E8F0')
-        fig.text(0.08, 0.18, "5. XAI Contribution Metrics Table", fontsize=11, fontweight='bold', color='#0F172A')
+        # Section 5 - Isolated XAI Table Grid Block
+        current_y -= 0.03
+        fig.text(0.08, current_y, "_"*95, fontsize=10, color='#E2E8F0')
+        current_y -= 0.03
+        fig.text(0.08, current_y, "5. XAI Contribution Metrics Table", fontsize=11, fontweight='bold', color='#0F172A')
         
-        # Position table on separate grid layer
-        ax_table = fig.add_axes([0.08, 0.03, 0.84, 0.12])
+        # Anchor matrix table safely near page base coordinate
+        ax_table = fig.add_axes([0.08, 0.05, 0.84, 0.12])
         ax_table.axis('off')
         
         table_content = [['Material Component', 'Actual Input Value', 'SHAP Impact (MPa)', 'Contribution Share']]
@@ -290,9 +307,9 @@ if can_proceed_to_payment and access_key == "VG40":
                 cell.set_facecolor('#F8FAFC' if i[0] % 2 == 0 else 'white')
                 cell.set_edgecolor('#E2E8F0')
                 
-        fig.text(0.08, 0.01, "_"*95, fontsize=10, color='#CBD5E1')
-        fig.text(0.08, -0.01, "Author Verification Signature: Vaishnavi Ghosare (Structural Lead)", fontsize=8.5, color='#4A5568', fontweight='bold')
-        fig.text(0.92, -0.01, "Page 1 of 1", fontsize=8.5, color='#4A5568', ha='right')
+        fig.text(0.08, 0.02, "_"*95, fontsize=10, color='#CBD5E1')
+        fig.text(0.08, 0.00, "Author Verification Signature: Vaishnavi Ghosare (Structural Lead)", fontsize=8.5, color='#4A5568', fontweight='bold')
+        fig.text(0.92, 0.00, "Page 1 of 1", fontsize=8.5, color='#4A5568', ha='right')
         
         pdf_buf = io.BytesIO()
         plt.savefig(pdf_buf, format='pdf', dpi=300, bbox_inches='tight')
@@ -328,10 +345,8 @@ with comp_col1:
 
 with comp_col2:
     st.markdown("**Terms & Refunds**")
-    st.caption("Refund Matrix: Due to instant on-screen technical data compilation, unlocked material features are fully non-refundable.")
-    st.caption("Fulfillment Terms: This app acts as an optimization calculation module.")
+    st.caption("Refund Matrix: Due to instant on-screen data compilation, unlocked features are non-refundable.")
 
 with comp_col3:
     st.markdown("**Business Logistics**")
     st.caption("Pricing Config: Standard Corporate (₹2000) / Academic Verification (₹50)")
-    st.caption("Fulfillment Speed: Instantaneous delivery via dynamic server data unlock layer pathways.")
