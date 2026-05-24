@@ -165,3 +165,47 @@ with col_payment:
         # Direct the fully rendered graphic object into Streamlit safely
         st.pyplot(fig)
         plt.close(fig)
+
+        # ---- Additional XAI Reporting: textual explanation + contribution bar chart ----
+        shap_vals = np.array(calculated_shap_values.values[0])
+        feat_names = list(calculated_shap_values.feature_names)
+
+        df_shap = pd.DataFrame({
+            'feature': feat_names,
+            'shap_value': shap_vals,
+        })
+        df_shap['abs_shap'] = df_shap['shap_value'].abs()
+        df_shap['pct_contrib'] = 100.0 * df_shap['abs_shap'] / df_shap['abs_shap'].sum()
+        df_shap.sort_values('abs_shap', ascending=False, inplace=True)
+
+        # Natural-language explanation: top positive and negative contributors
+        pos = df_shap[df_shap['shap_value'] > 0].head(3)
+        neg = df_shap[df_shap['shap_value'] < 0].head(3)
+
+        why_lines = []
+        if not pos.empty:
+            why_lines.append("Primary positive contributors (increase predicted strength): " +
+                             ", ".join([f"{r.feature} (+{r.shap_value:.2f}, {r.pct_contrib:.1f}%)" for r in pos.itertuples()]))
+        if not neg.empty:
+            why_lines.append("Primary negative contributors (decrease predicted strength): " +
+                             ", ".join([f"{r.feature} ({r.shap_value:.2f}, {r.pct_contrib:.1f}%)" for r in neg.itertuples()]))
+        why_text = "\n".join(why_lines) if why_lines else "No strong contributors identified."
+
+        st.subheader("🔎 Why (Feature Contributions)")
+        st.write(why_text)
+
+        # Contribution bar chart
+        fig2, ax2 = plt.subplots(figsize=(8, 4))
+        plot_df = df_shap.copy()
+        plot_df = plot_df[::-1]  # reverse for horizontal bar order
+        colors = ['green' if v > 0 else 'red' for v in plot_df['shap_value']]
+        ax2.barh(plot_df['feature'], plot_df['shap_value'], color=colors)
+        ax2.set_xlabel('SHAP value (contribution to prediction)')
+        ax2.set_title('Feature contributions (positive = increase prediction)')
+        plt.tight_layout()
+        st.pyplot(fig2)
+        plt.close(fig2)
+
+        # Show a small table summarizing contributions
+        st.subheader("📊 SHAP Contribution Summary")
+        st.table(df_shap[['feature', 'shap_value', 'pct_contrib']].reset_index(drop=True))
