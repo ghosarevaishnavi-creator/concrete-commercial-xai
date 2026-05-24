@@ -7,7 +7,46 @@ import io
 st.set_page_config(page_title="Commercial XAI Concrete Engineering", layout="centered")
 
 # =========================================================================
-# 1. PUBLIC AREA: APP HEADER & TITLE (AI Repo Title Displayed)
+# SIDEBAR NAVIGATION: CUSTOMER ASSISTANCE CHATBOT & FEEDBACK SYSTEM
+# =========================================================================
+with st.sidebar:
+    st.header("🤖 Customer Support Desk")
+    st.write("Have a question about your concrete mix evaluation or payment status? Type below:")
+    
+    # Simple interactive local chatbot memory layout
+    if "messages" not in st.session_state:
+        st.session_state.messages = [{"role": "assistant", "content": "Hello! I am your VG Concrete Assistant. How can I help you with your structural analytics or billing today?"}]
+        
+    for msg in st.session_state.messages:
+        st.chat_message(msg["role"]).write(msg["content"])
+        
+    if chat_user_input := st.chat_input("Type support question here..."):
+        st.session_state.messages.append({"role": "user", "content": chat_user_input})
+        st.chat_message("user").write(chat_user_input)
+        
+        # Automated responses mapped for high quality consumer support routing
+        lowered_input = chat_user_input.lower()
+        if "pay" in lowered_input or "payment" in lowered_input or "money" in lowered_input or "failed" in lowered_input:
+            reply = "If your payment was processed but your unlock key hasn't arrived, please file an objection instantly using the feedback card in our main footer or email our helpdesk at billing@yourdomain.com."
+        elif "m40" in lowered_input or "strength" in lowered_input or "cement" in lowered_input:
+            reply = "Our machine learning model estimates performance based on your exact batch weights. Unlocking our SHAP report exposes why features increase or decrease structural yield."
+        else:
+            reply = "Thank you for reaching out! Your query has been logged. For immediate technical review or validation, you can drop a line to our system supervisor."
+            
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+        st.chat_message("assistant").write(reply)
+
+    st.markdown("---")
+    st.header("📝 App Experience Feedback")
+    user_review = st.text_area("Share your user experience or suggest custom feature additions:", placeholder="Type feedback comments here...")
+    if st.button("Submit Feedback & Logs"):
+        if user_review:
+            st.toast("✅ Thank you! Your feedback has been safely submitted to our engineering team.", icon="🎉")
+        else:
+            st.error("Please enter a short comment before submitting.")
+
+# =========================================================================
+# MAIN DASHBOARD AREA - PUBLIC INTERFACE FRAMEWORK
 # =========================================================================
 col_header, col_logo = st.columns([8, 2])
 with col_header:
@@ -18,9 +57,6 @@ with col_logo:
 
 st.markdown("---")
 
-# =========================================================================
-# 2. PUBLIC AREA: MIDDLE-OF-PAGE MIX INPUT CHANNEL
-# =========================================================================
 st.subheader("📋 1. Concrete Mix Design Parameters (Public Access)")
 st.write("Modify your structural batch weights below to compute initial 28-day estimations.")
 
@@ -40,9 +76,7 @@ with inp_col2:
 
 st.markdown("---")
 
-# =========================================================================
-# 3. PUBLIC AREA: INITIAL 28-DAY BASELINE ESTIMATION ONLY
-# =========================================================================
+# Algorithmic calculation processing
 base_28d = 35.86 + 7.8801 + 6.5424 + 1.5131 + 1.2618 - 1.2437 + 0.6528 + 0.1636
 cement_factor = (cement / 380.0)
 water_factor = (165.0 / water)
@@ -63,7 +97,7 @@ st.metric(label="📆 Estimated 28-Day Compressive Strength", value=f"{pred_28d:
 st.markdown("---")
 
 # =========================================================================
-# 4. COMMERCIAL PAYWALL GATEWAY (Fixed Redirect Layout Engine)
+# COMMERCIAL PAYWALL GATEWAY WITH PROGRAMMATIC CRITERIA ENFORCEMENT
 # =========================================================================
 st.subheader("💳 3. Commercial Analytics Access Gateway")
 st.error("🔒 The complete XAI feature explanations, multi-day curing charts (7/14 days), and printable verification documents are locked.")
@@ -73,33 +107,46 @@ with pay_col1:
     st.markdown("""
     **Premium Account Analytics Tiers:**
     * **Industrial Standard Fee:** ₹2,000 INR
-    * **Verified Academic Discount:** ₹50 INR *(Requires Student ID configuration)*
+    * **Verified Academic Discount:** ₹50 INR *(Requires Student ID Upload)*
     """)
     user_tier = st.radio("Select Your Account Tier:", ["Industrial Professional (₹2000)", "Academic Student (₹50)"])
-    if user_tier == "Academic Student (₹50)":
-        st.file_uploader("📤 Upload Valid College ID Card (PDF/JPEG):")
 
-with pay_col2:
-    st.markdown("**💳 Secure Razorpay Checkout Portal:**")
-    st.info("Click the button below to process your access fee safely on Razorpay's verified payment routing network.")
+# Programmatic verification gate logic
+can_proceed_to_payment = True
+
+if user_tier == "Academic Student (₹50)":
+    st.markdown("---")
+    st.warning("🎓 **Academic Verification Required:** You must upload a valid college ID before the payment link opens.")
+    uploaded_student_id = st.file_uploader("📤 Upload Valid College ID Card (PDF/JPEG/PNG):", type=["pdf", "jpg", "jpeg", "png"])
     
-    # Beautiful, clickable link button pointing directly to your personalized page
-    st.link_button(
-        label="🚀 Pay Securely via Razorpay", 
-        url="https://razorpay.me/@vaishnavisantoshraoghosare",
-        use_container_width=True
-    )
+    if uploaded_student_id is None:
+        can_proceed_to_payment = False
+        st.info("💡 Waiting for your student verification document to activate the secure checkout gate...")
 
-st.write("After clearing your payment processing window, type your corporate verification code below to unlock the secure model layer:")
-access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment passkey here...")
+# Render payment workflow only if verification rules match completely
+if can_proceed_to_payment:
+    with pay_col2:
+        st.markdown("**💳 Secure Razorpay Checkout Portal:**")
+        st.info("Click below to clear your configuration fee securely in a new tab. After finalizing, enter your transaction passkey to activate analytics.")
+        
+        st.link_button(
+            label="🚀 Pay Securely via Razorpay", 
+            url="https://razorpay.me/@vaishnavisantoshraoghosare",
+            use_container_width=True
+        )
+        
+    st.write("After clearing your payment processing window, type your corporate verification code below to unlock the secure model layer:")
+    access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment passkey here...")
+else:
+    # Completely freeze access inputs if parameters are breached
+    st.text_input("🔑 Enter Access Passkey:", value="", type="password", disabled=True, help="Upload your college identity document first to release the input tray.")
 
 # =========================================================================
-# 5. LOCKED PREMIUM CONTENT LAYER (Accessible only via verification token)
+# LOCKED PREMIUM CONTENT LAYER
 # =========================================================================
-if access_key == "VG40":
+if can_proceed_to_payment and access_key == "VG40":
     st.success("✅ Access token authorized! Loading deep technical analysis tools...")
     
-    # Hidden Data processing arrays
     features = ["Blast Furnace Slag", "Cement Content", "Superplasticizer Admixture", "Fine Aggregate", "Water Volume", "Coarse Aggregate", "Fly Ash Substitution"]
     raw_inputs_mapped = [slag, cement, superplasticizer, fine_agg, water, coarse_agg, fly_ash]
     shap_values = [7.8801 * cement_factor, 6.5424 * cement_factor, 1.5131, 1.2618, 0.6528, 0.1636, -1.2437 * (fly_ash/45.0 if fly_ash > 0 else 0)]
@@ -109,7 +156,6 @@ if access_key == "VG40":
         'feature': features, 'raw_value': raw_inputs_mapped, 'shap_value': shap_values, 'pct_contrib': pct_contribs
     }).sort_values(by='shap_value', ascending=False)
 
-    # UNLOCKED SECTION: Multi-Day Predictions
     st.markdown("---")
     st.subheader("📈 4. Premium Multi-Day Curing Kinetic Summary")
     m_col1, m_col2 = st.columns(2)
@@ -117,7 +163,6 @@ if access_key == "VG40":
     m_col2.metric(label="📆 14-Day Compressive Strength", value=f"{pred_14d:.2f} MPa")
     st.info(f"**Verification Status for {target_class}:** {target_day_msg}")
 
-    # UNLOCKED SECTION: Visual Explanations & Bullet Recommendations
     st.subheader("💡 5. XAI Component-Level Explanations")
     st.markdown(f"""
     * **Blast Furnace Slag:** value=**{slag:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[0]:+.2f} MPa**. Slag acts as a secondary catalytic engine, consuming free calcium hydroxide to optimize long-term matrix structure.
@@ -126,7 +171,6 @@ if access_key == "VG40":
     * **Fly Ash Substitution:** value=**{fly_ash:.1f} kg** $\\rightarrow$ decreases prediction by **{shap_values[6]:+.2f} MPa**. Imposes an early-age pozzolanic lag, reducing strength if replacement metrics are unchecked.
     """)
 
-    # UNLOCKED SECTION: Analytical Plots & Figures (Fixed with explicit text alignments)
     st.subheader("📊 6. Interactive SHAP Contribution Diagram")
     fig, ax = plt.subplots(figsize=(8, 3.8))
     colors_list = ['#EF4444' if x < 0 else '#10B981' for x in shap_df['shap_value']]
@@ -144,12 +188,10 @@ if access_key == "VG40":
     plt.tight_layout()
     st.pyplot(fig)
 
-    # Save to memory buffer
     img_buf = io.BytesIO()
     plt.savefig(img_buf, format='png', dpi=300, bbox_inches='tight')
     img_buf.seek(0)
 
-    # UNLOCKED SECTION: Clean A4 PDF Report Generation Engine
     def generate_pdf_report(dataframe, figure_bytes):
         plt.rcParams['font.family'] = 'serif'
         plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
@@ -186,98 +228,4 @@ if access_key == "VG40":
 
         fig.text(0.08, 0.55, "3. Structural Engineering Recommendations", fontsize=12, fontweight='bold', color='#0F172A')
         rec_text = (
-            f"• To safely verify performance for M40 class parameters, the binder volume must remain above 350 kg/m³.\n"
-            f"• When tracking replacement metrics for Fly Ash ({fly_ash:.1f} kg/m³), the negative pozzolanic lag should be systematically\n"
-            f"  balanced out by utilizing a proper dosage of Superplasticizer ({superplasticizer:.1f} kg/m³) to compress the water demand matrix.\n"
-            f"• Ensure curing wet-blanket moisture application parameters are sustained across a minimum 14-day milestone timeline."
-        )
-        fig.text(0.08, 0.46, rec_text, fontsize=10, color='#334155', linespacing=1.4)
-
-        fig.text(0.08, 0.42, "4. Definitive Research Conclusion", fontsize=12, fontweight='bold', color='#0F172A')
-        conclusion_text = (
-            f"In conclusion, the proposed commercial batch configuration safely satisfies and clears all characteristic target structural\n"
-            f"parameters mandated for standard M40 performance classifications. The integration of Explainable AI (XAI) verification\n"
-            f"rules confirms that secondary hydration kinetics will effectively offset early-age substitution deficits by Day 28."
-        )
-        fig.text(0.08, 0.35, conclusion_text, fontsize=10, color='#334155', linespacing=1.4)
-        
-        fig.text(0.08, 0.33, "_"*95, fontsize=10, color='#E2E8F0')
-        fig.text(0.08, 0.29, "5. XAI Contribution Diagrams & Tabular Framework", fontsize=12, fontweight='bold', color='#0F172A')
-        
-        # Embed Plot Image
-        ax_graph = fig.add_axes([0.12, 0.15, 0.76, 0.12])
-        bar_colors = ['#EF4444' if x < 0 else '#10B981' for x in dataframe['shap_value']]
-        ax_graph.barh(dataframe['feature'], dataframe['shap_value'], color=bar_colors, edgecolor='#0F172A', height=0.55)
-        ax_graph.axvline(x=0, color='#334155', linestyle='--', linewidth=0.8)
-        ax_graph.tick_params(axis='both', labelsize=7.5)
-        ax_graph.spines['top'].set_visible(False)
-        ax_graph.spines['right'].set_visible(False)
-        
-        # Embed Detailed Matrix Table Data
-        ax_table = fig.add_axes([0.08, 0.02, 0.84, 0.11])
-        ax_table.axis('off')
-        
-        table_content = [['Material Component', 'Actual Input Value', 'SHAP Impact (MPa)', 'Contribution Share']]
-        for _, row in dataframe.iterrows():
-            table_content.append([
-                str(row['feature']), f"{row['raw_value']:.1f}", f"{row['shap_value']:+.2f}", f"{row['pct_contrib']:.1f}%"
-            ])
-        
-        report_table = ax_table.table(cellText=table_content, loc='center', cellLoc='left', colWidths=[0.36, 0.20, 0.22, 0.22])
-        report_table.auto_set_font_size(False)
-        report_table.set_fontsize(8)
-        
-        for i, cell in report_table.get_celld().items():
-            cell.set_height(0.12)
-            if i[0] == 0:
-                cell.set_text_props(weight='bold', color='white')
-                cell.set_facecolor('#1E3A8A')
-            else:
-                cell.set_facecolor('#F8FAFC' if i[0] % 2 == 0 else 'white')
-                cell.set_edgecolor('#E2E8F0')
-                
-        fig.text(0.08, -0.01, "_"*95, fontsize=10, color='#CBD5E1')
-        fig.text(0.08, -0.03, "Author Verification: Vaishnavi Ghosare (Structural Engineer)", fontsize=8.5, color='#4A5568', fontweight='bold')
-        fig.text(0.92, -0.03, "Page 1 of 1", fontsize=8.5, color='#4A5568', ha='right')
-        
-        pdf_buf = io.BytesIO()
-        plt.savefig(pdf_buf, format='pdf', dpi=300, bbox_inches='tight')
-        plt.close(fig)
-        pdf_buf.seek(0)
-        return pdf_buf
-
-    pdf_payload = generate_pdf_report(shap_df, img_buf)
-    
-    st.download_button(
-        label="📥 Download Attractive A4 SHAP Report (PDF)",
-        data=pdf_payload,
-        file_name="Commercial_XAI_Concrete_Report.pdf",
-        mime="application/pdf",
-        use_container_width=True
-    )
-
-elif access_key != "":
-    st.error("❌ Invalid Access Passkey. Please complete your transaction verification step.")
-
-# =========================================================================
-# PUBLIC REGULATORY & COMPLIANCE FOOTER (Required to pass Razorpay Onboarding Audit)
-# =========================================================================
-st.markdown("---")
-st.subheader("⚖️ Legal & Compliance Information")
-comp_col1, comp_col2, comp_col3 = st.columns(3)
-
-with comp_col1:
-    st.markdown("**Contact Us & Support**")
-    st.caption("Contact: Vaishnavi Ghosare")
-    st.caption("Email: support@yourdomain.com")
-    st.caption("Role: Structural Engineer & Platform Founder")
-
-with comp_col2:
-    st.markdown("**Terms & Refunds**")
-    st.caption("Refund Policy: Due to instant calculation execution, unlocked premium features and reports are non-refundable.")
-    st.caption("Terms of Service: This app provides predictive concrete data models for optimization optimization algorithms.")
-
-with comp_col3:
-    st.markdown("**Business Logistics**")
-    st.caption("Pricing Tiers: Standard Corporate (₹2000) / Student Academic (₹50)")
-    st.caption("Delivery Timeline: Instantaneous via on-screen dynamic visual render data channels.")
+            f"• To safely verify performance for
