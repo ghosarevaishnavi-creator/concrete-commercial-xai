@@ -189,16 +189,17 @@ if access_key == "VG40":
             canvas_obj.text(0.08, 0.96, f"Design Target Class: {target_class} Criteria", fontsize=9, color='#4A5568', fontstyle='italic')
             canvas_obj.text(0.92, 0.96, "XAI RECONSTRUCT LAYER v3.0", fontsize=10, fontweight='bold', color='#1E3A8A', ha='right')
             canvas_obj.text(0.08, 0.95, "_"*95, fontsize=10, color='#CBD5E1')
-            canvas_obj.text(0.08, 0.04, "_"*95, fontsize=10, color='#CBD5E1')
-            canvas_obj.text(0.08, 0.02, "Official Certification Seal: Authorized Digital Concrete Interpretation Signature", fontsize=7.5, color='#4A5568', fontweight='bold')
-            canvas_obj.text(0.92, 0.02, f"Page {current_page_str}", fontsize=8, color='#4A5568', ha='right')
+            canvas_obj.text(0.08, 0.05, "_"*95, fontsize=10, color='#CBD5E1')
+            canvas_obj.text(0.08, 0.03, "Official Certification Seal: Authorized Digital Concrete Interpretation Signature", fontsize=7.5, color='#4A5568', fontweight='bold')
+            canvas_obj.text(0.92, 0.03, f"Page {current_page_str}", fontsize=8, color='#4A5568', ha='right')
 
-        def render_justified_block(canvas_obj, text_str, start_y, line_width=84):
+        def render_justified_block(canvas_obj, text_str, start_y, line_width=66):
             wrapped = textwrap.wrap(text_str, width=line_width)
             c_y = start_y
             for line in wrapped:
-                canvas_obj.text(0.08, c_y, line, fontsize=10, color='#334155', ha='left')
-                c_y -= 0.023
+                # Upgraded to 13pt professional font styling with a wider vertical track step (0.029)
+                canvas_obj.text(0.08, c_y, line, fontsize=13, color='#1E293B', ha='left')
+                c_y -= 0.029
             return c_y
 
         # --- PAGE 1: MIX PARAMETERS & ALGORITHMIC STRENGTH FORECAST ---
@@ -212,7 +213,7 @@ if access_key == "VG40":
             f"Therefore, this framework utilizes machine learning to execute an explicit Input-to-Output mapping. By processing raw material batch ingredients "
             f"as localized multidimensional features, the model captures non-linear chemical kinetics, predicting structural output capacity with high precision."
         )
-        y = render_justified_block(fig_p1, p1_intro, 0.83) - 0.01
+        y = render_justified_block(fig_p1, p1_intro, 0.83) - 0.03
         
         fig_p1.text(0.08, y, "1.1 Input Constituent Batch Parameters", fontsize=11, fontweight='bold', color='#0F172A')
         summary_txt = (
@@ -221,8 +222,8 @@ if access_key == "VG40":
             f"  • Total Water: {water:.1f} L/m³               • Superplasticizer: {superplasticizer:.1f} kg/m³    • Fly Ash Substitution: {fly_ash:.1f} kg/m³\n"
             f"  • Fine Aggregate: {fine_agg:.1f} kg/m³         • Coarse Aggregate: {coarse_agg:.1f} kg/m³"
         )
-        fig_p1.text(0.08, y - 0.11, summary_txt, fontsize=9.5, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
-        y -= 0.14
+        fig_p1.text(0.08, y - 0.11, summary_txt, fontsize=10, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
+        y -= 0.16
         
         fig_p1.text(0.08, y, "1.2 Compressive Strength Prediction Model Results", fontsize=11, fontweight='bold', color='#0F172A')
         strength_txt = (
@@ -231,11 +232,11 @@ if access_key == "VG40":
             f"  • Predicted 14-Day Compressive Strength: {pred_14d:.2f} MPa\n"
             f"  • Predicted 28-Day Compressive Strength: {pred_28d:.2f} MPa"
         )
-        fig_p1.text(0.08, y - 0.10, strength_txt, fontsize=9.5, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
-        y -= 0.13
+        fig_p1.text(0.08, y - 0.10, strength_txt, fontsize=10, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
+        y -= 0.15
 
         fig_p1.text(0.08, y, "1.3 Engineering Conclusion & Performance Verification", fontsize=11, fontweight='bold', color='#0F172A')
-        y -= 0.025
+        y -= 0.03
         
         p1_conclusion = (
             f"CRITERIA VALIDATION STATEMENT: THE TARGET DESIGN SPECIFICATION IS {satisfaction_status}.\n\n"
@@ -252,7 +253,7 @@ if access_key == "VG40":
         
         y = 0.86
         fig_p2.text(0.08, y, "2.1 Microstructural Material Mechanisms & Internal Modeling Logic", fontsize=11, fontweight='bold', color='#0F172A')
-        y -= 0.025
+        y -= 0.03
         
         p2_mech_1 = (
             f"The additive mathematical model constructs a terminal 28-day characteristic strength prediction output configuration of {pred_28d:.2f} MPa against a fixed baseline framework index of 35.86 MPa. "
@@ -260,17 +261,17 @@ if access_key == "VG40":
             f"On a microscopic scale, this is achieved via chemical consumption of liberated free calcium hydroxide crystals generated during early hydration cycles. "
             f"The model tracks this pozzolanic conversion as it forms dense secondary Calcium-Silicate-Hydrate (C-S-H) crystalline networks that structurally reinforce structural micro-void spaces."
         )
-        y = render_justified_block(fig_p2, p2_mech_1, y) - 0.015
+        y = render_justified_block(fig_p2, p2_mech_1, y) - 0.04
 
         p2_mech_2 = (
             f"Conversely, Fly Ash Substitution introduces a localized early-age hydration latency, requiring an attribution index adjustment of {shap_values[6]:.2f} MPa. "
             f"This behavior stems from the unreactive vitreous silica hulls of the fly ash particles during early curing intervals. To balance this deficit, the internal design "
             f"applies a Superplasticizer dosage of {superplasticizer:.1f} kg/m³ to induce electrostatic grain deflocculation, lowering water demand and ensuring high particle pack density."
         )
-        y = render_justified_block(fig_p2, p2_mech_2, y) - 0.025
+        y = render_justified_block(fig_p2, p2_mech_2, y) - 0.05
 
         fig_p2.text(0.08, y, "2.2 Concrete Durability & Lifespan Matrix Prediction", fontsize=11, fontweight='bold', color='#0F172A')
-        y -= 0.025
+        y -= 0.03
         
         p2_dur = (
             f"The core evaluation architecture screens microstructural fluid transport channels to issue lifetime durability ratings. Given the current water-to-binder configuration, "
@@ -295,7 +296,7 @@ if access_key == "VG40":
         
         # Safe bounds to completely solve label collision/clipping anomalies
         ax_graph.set_xlim(-max_val * 1.50, max_val * 1.50)
-        ax_graph.tick_params(axis='both', labelsize=7.5)
+        ax_graph.tick_params(axis='both', labelsize=8)
         ax_graph.spines['top'].set_visible(False)
         ax_graph.spines['right'].set_visible(False)
         
@@ -303,14 +304,14 @@ if access_key == "VG40":
         for bar in ax_graph.patches:
             w = bar.get_width()
             if w >= 0:
-                ax_graph.text(w + (max_val * 0.05), bar.get_y() + bar.get_height()/2, f'{w:+.2f} MPa', va='center', ha='left', fontsize=7, fontweight='bold')
+                ax_graph.text(w + (max_val * 0.05), bar.get_y() + bar.get_height()/2, f'{w:+.2f} MPa', va='center', ha='left', fontsize=8, fontweight='bold')
             else:
-                ax_graph.text(w - (max_val * 0.05), bar.get_y() + bar.get_height()/2, f'{w:+.2f} MPa', va='center', ha='right', fontsize=7, fontweight='bold')
+                ax_graph.text(w - (max_val * 0.05), bar.get_y() + bar.get_height()/2, f'{w:+.2f} MPa', va='center', ha='right', fontsize=8, fontweight='bold')
 
-        y -= 0.33
+        y -= 0.35
         fig_p3.text(0.08, y, "3.2 Tabular Feature Contribution Weights", fontsize=11, fontweight='bold', color='#0F172A')
         
-        ax_table = fig_p3.add_axes([0.08, y - 0.22, 0.84, 0.18])
+        ax_table = fig_p3.add_axes([0.08, y - 0.26, 0.84, 0.22])
         ax_table.axis('off')
         
         table_content = [['Material Component', 'Input Weight', 'SHAP Value (MPa)', 'Contribution Impact']]
@@ -321,7 +322,7 @@ if access_key == "VG40":
         
         report_table = ax_table.table(cellText=table_content, loc='center', cellLoc='left', colWidths=[0.38, 0.20, 0.21, 0.21])
         report_table.auto_set_font_size(False)
-        report_table.set_fontsize(8)
+        report_table.set_fontsize(8.5)
         
         for i, cell in report_table.get_celld().items():
             cell.set_height(0.14)
@@ -369,7 +370,7 @@ comp_col1, comp_col2, comp_col3 = st.columns(3)
 with comp_col1:
     st.markdown("**Contact Us & Support**")
     st.caption("Contact: Vaishnavi Ghosare")
-    st.caption("Email: support@yourdomain.com")
+    st.caption("Email: ghosarevaishnavi@gmail.com")
     st.caption("Role: Structural Engineer & Platform Founder")
 
 with comp_col2:
