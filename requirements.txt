@@ -3,5 +3,7 @@ xgboost
 shap
 joblib
 matplotlib
+pytest
+httpx
 fastapi
 uvicorn

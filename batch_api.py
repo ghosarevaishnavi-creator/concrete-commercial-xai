@@ -1,9 +1,11 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Header
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict, Optional
 import joblib
 import pandas as pd
 import uvicorn
+import time
+import os
 
 app = FastAPI(title="Concrete XAI Batch API")
 
@@ -22,18 +24,52 @@ FEATURE_NAMES = [
     'Age (day)'
 ]
 
+
 class PredictionItem(BaseModel):
     data: Dict[str, float]
 
+
 class BatchRequest(BaseModel):
     items: List[PredictionItem]
+
 
 class BatchResponse(BaseModel):
     predictions: List[float]
 
 
+# Simple in-memory rate limiter per API key (for demo only — not for production)
+RATE_LIMIT_WINDOW = int(os.environ.get('RATE_LIMIT_WINDOW', '60'))  # seconds
+RATE_LIMIT_MAX = int(os.environ.get('RATE_LIMIT_MAX', '60'))  # requests per window
+_request_log: Dict[str, List[float]] = {}
+
+
+def is_rate_limited(key: str) -> bool:
+    now = time.time()
+    window_start = now - RATE_LIMIT_WINDOW
+    logs = _request_log.setdefault(key, [])
+    # drop old
+    while logs and logs[0] < window_start:
+        logs.pop(0)
+    if len(logs) >= RATE_LIMIT_MAX:
+        return True
+    logs.append(now)
+    return False
+
+
+def check_api_key(api_key: Optional[str]):
+    expected = os.environ.get('API_KEY', 'CHANGE_ME')
+    if not api_key or api_key != expected:
+        raise HTTPException(status_code=401, detail='Invalid or missing API key')
+
+
 @app.post('/predict', response_model=BatchResponse)
-def predict_batch(req: BatchRequest):
+def predict_batch(req: BatchRequest, request: Request, x_api_key: Optional[str] = Header(None)):
+    # API key auth
+    check_api_key(x_api_key)
+    # rate limit
+    if is_rate_limited(x_api_key or request.client.host):
+        raise HTTPException(status_code=429, detail='Rate limit exceeded')
+
     rows = []
     for it in req.items:
         row = []

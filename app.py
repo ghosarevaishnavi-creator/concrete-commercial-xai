@@ -280,6 +280,18 @@ with col_payment:
         for line in result_lines:
             st.write(line)
 
+        # Audience toggle for PDF wording
+        st.markdown("**Select audience for the PDF wording:**")
+        audience = st.radio("Audience:", ["Student", "Researcher", "Contractor"], horizontal=True)
+
+        # Tailor the conclusion wording
+        if audience == 'Student':
+            conclusion_lines.insert(0, "Audience note: This explanation includes pedagogical notes and references for learning.")
+        elif audience == 'Researcher':
+            conclusion_lines.insert(0, "Audience note: Includes interpretive details and suggestions for experimental validation.")
+        else:
+            conclusion_lines.insert(0, "Audience note: Practical recommendations for field implementation and checkpoints.")
+
         # ---- Conclusion Section (actionable, short) ----
         conclusion_lines = []
         conclusion_lines.append("Conclusion:")

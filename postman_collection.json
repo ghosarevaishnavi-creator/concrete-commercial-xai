@@ -1,0 +1,23 @@
+{
+  "info": {
+    "name": "Concrete XAI API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Batch Predict",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "x-api-key", "value": "{{API_KEY}}"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    { \"data\": {\n      \"Cement (component 1)(kg in a m^3 mixture)\": 320,\n      \"Blast Furnace Slag (component 2)(kg in a m^3 mixture)\": 0,\n      \"Fly Ash (component 3)(kg in a m^3 mixture)\": 50,\n      \"Water  (component 4)(kg in a m^3 mixture)\": 175,\n      \"Superplasticizer (component 5)(kg in a m^3 mixture)\": 6,\n      \"Coarse Aggregate  (component 6)(kg in a m^3 mixture)\": 960,\n      \"Fine Aggregate (component 7)(kg in a m^3 mixture)\": 740,\n      \"Age (day)\": 28\n    }}\n  ]\n}"
+        },
+        "url": {"raw": "http://localhost:8000/predict", "protocol": "http", "host": ["localhost"], "port": "8000", "path": ["predict"]}
+      }
+    }
+  ]
+}
