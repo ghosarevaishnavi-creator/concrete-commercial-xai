@@ -1,4 +1,21 @@
+# =========================================================================
+# FORCE-INSTALL MISSING PACKAGES (Bypasses requirements.txt bugs)
+# =========================================================================
+import subprocess
+import sys
+
+try:
+    import reportlab
+except ImportError:
+    # If reportlab is missing, force pip to install it in the cloud container instantly
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "reportlab"])
+# =========================================================================
+
 import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import io
+# ... rest of your code remains exactly the same ...import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
