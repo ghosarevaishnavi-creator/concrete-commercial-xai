@@ -202,6 +202,68 @@ with col_payment:
         st.subheader("🔎 Why (Feature Contributions)")
         st.write(why_text)
 
+        # ---- Detailed, educational SHAP explanation (for students/researchers/contractors) ----
+        base_value = None
+        if hasattr(calculated_shap_values, 'base_values'):
+            bv = calculated_shap_values.base_values
+            try:
+                base_value = float(bv[0])
+            except Exception:
+                try:
+                    base_value = float(bv)
+                except Exception:
+                    base_value = None
+
+        predicted = float(computed_strength)
+        net_effect = None
+        if base_value is not None:
+            net_effect = predicted - base_value
+
+        # Domain guidance templates per feature
+        guidance = {
+            'Cement Content': 'Cement is the primary binder — increasing cement generally raises early-age strength but also increases cost and CO2 footprint. Optimize mix for required strength.',
+            'Water Volume': 'Water increases workability but a higher water-to-cement ratio lowers strength. Reducing water while using superplasticizer improves strength.',
+            'Superplasticizer Admixture': 'Superplasticizers reduce water demand for the same workability, enabling lower w/c ratios and higher strength when used correctly.',
+            'Age (Curing Days)': 'Strength develops with curing time — adequate curing (moisture and temperature control) significantly improves final strength.',
+            'Fly Ash Substitution': 'Fly ash can reduce early strength but improves long-term strength and durability; monitor replacement percentage carefully for early-age requirements.',
+            'Blast Furnace Slag': 'Slag behaves similarly to fly ash: beneficial for long-term strength and durability but may reduce early-age strength at high replacement levels.',
+            'Coarse Aggregate': 'Aggregate quality and grading affect packing density and strength — check grading, cleanliness, and particle shape.',
+            'Fine Aggregate': 'Fine aggregate proportions affect workability and finishing; excessive fines can increase water demand and reduce strength.'
+        }
+
+        # Build per-feature detailed lines
+        detailed_lines = []
+        detailed_lines.append(f"Executive summary: predicted = {predicted:.2f} MPa" + (f", model base = {base_value:.2f} MPa, net effect = {net_effect:.2f} MPa" if net_effect is not None else ""))
+        detailed_lines.append("\nTop contributors and interpretations:")
+        for r in df_shap.head(8).itertuples():
+            feat = r.feature
+            val = live_inputs.iloc[0][feat] if feat in live_inputs.columns else 'N/A'
+            sign = 'increases' if r.shap_value > 0 else 'decreases'
+            pct = r.pct_contrib
+            interp = guidance.get(feat, '')
+            detailed_lines.append(f"- {feat}: value={val} -> {sign} prediction by {r.shap_value:.2f} MPa ({pct:.1f}%). {interp}")
+
+        # Actionable recommendations (top 3)
+        detailed_lines.append("\nActionable recommendations:")
+        for r in pos.itertuples():
+            feat = r.feature
+            interp = guidance.get(feat, '')
+            detailed_lines.append(f"- Increase/maintain {feat}: {interp}")
+        for r in neg.itertuples():
+            feat = r.feature
+            interp = guidance.get(feat, '')
+            detailed_lines.append(f"- Reduce/adjust {feat}: {interp}")
+
+        # Lesson and conclusion
+        detailed_lines.append("\nLessons and conclusion:")
+        detailed_lines.append("- The water-to-cement ratio and proper curing are often the single biggest drivers of early-age compressive strength.")
+        detailed_lines.append("- Supplementary materials (fly ash, slag) improve long-term performance but require balancing for early-age requirements.")
+        detailed_lines.append("- Use the contribution table and recommendations to iteratively adjust mix design and validate with field tests.")
+
+        detailed_text = "\n".join(detailed_lines)
+        st.subheader("📘 Detailed Explanation & Recommendations")
+        st.write(detailed_text)
+
         # Contribution bar chart
         fig2, ax2 = plt.subplots(figsize=(8, 4))
         plot_df = df_shap.copy()
@@ -220,7 +282,8 @@ with col_payment:
         # Add a final page with textual summary
         summary_fig = plt.figure(figsize=(8.5, 11))
         summary_fig.clf()
-        summary_text = f"Predicted 28-day strength: {computed_strength:.2f} MPa\n\n{why_text}"
+        # include the rich detailed text in the PDF summary page
+        summary_text = f"Predicted 28-day strength: {computed_strength:.2f} MPa\n\n{detailed_text}"
         summary_fig.text(0.01, 0.99, summary_text, va='top', wrap=True, fontsize=10)
         with PdfPages(pdf_buffer) as pdf:
             pdf.savefig(summary_fig)
