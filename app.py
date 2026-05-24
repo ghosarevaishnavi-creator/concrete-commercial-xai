@@ -50,10 +50,8 @@ with col_inputs:
     val_7 = st.slider("Fine Aggregate Matrix (kg/m³)", 500.0, 1000.0, 740.0, step=10.0)
     val_8 = st.slider("Target Structure Curing Horizon (Days)", 1, 365, 28)
 
-    # FIXED: Added exact column names matching the original dataset features
     live_inputs = pd.DataFrame([[val_1, val_2, val_3, val_4, val_5, val_6, val_7, val_8]],
-                              columns=['Cement', 'Blast_Furnace_Slag', 'Fly_Ash', 'Water', 
-                                       'Superplasticizer', 'Coarse_Aggregate', 'Fine_Aggregate', 'Age'])
+                              columns=['Cement', 'Blast_Furnace_Slag', 'Fly_Ash', 'Water', 'Superplasticizer', 'Coarse_Aggregate', 'Fine_Aggregate', 'Age'])
 
 with col_payment:
     st.subheader("💳 2. Commercial License & Payment Gateway")
