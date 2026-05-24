@@ -50,10 +50,13 @@ with col_inputs:
     val_7 = st.slider("Fine Aggregate Matrix (kg/m³)", 500.0, 1000.0, 740.0, step=10.0)
     val_8 = st.slider("Target Structure Curing Horizon (Days)", 1, 365, 28)
 
-    live_inputs = pd.DataFrame([[val_1, val_2, val_3, val_4, val_5, val_6, val_7, val_8]])
+    # FIXED: Added exact column names matching the original dataset features
+    live_inputs = pd.DataFrame([[val_1, val_2, val_3, val_4, val_5, val_6, val_7, val_8]],
+                              columns=['Cement', 'Blast_Furnace_Slag', 'Fly_Ash', 'Water', 
+                                       'Superplasticizer', 'Coarse_Aggregate', 'Fine_Aggregate', 'Age'])
 
 with col_payment:
-    st.subheader("CN 2. Commercial License & Payment Gateway")
+    st.subheader("💳 2. Commercial License & Payment Gateway")
     
     st.markdown("""
     <div style='background-color:#FEF3C7; padding:12px; border-radius:8px; border-left: 5px solid #D97706; margin-bottom:15px;'>
@@ -105,7 +108,8 @@ with col_payment:
         
         st.markdown(f"""
         <div style='background-color:rgba(0,0,0,0.03); padding:20px; border-radius:12px; border-left: 9px solid {theme_color};'>
-            <h1 style='color:{theme_color}; margin:0;'>{computed_strength:.2f} MPa</h1>
+            <h4 style='margin:0;'>PREDICTED 28-DAY CHARACTERISTIC STRENGTH:</h4>
+            <h1 style='color:{theme_color}; margin:10px 0; font-size:40px;'>{computed_strength:.2f} MPa</h1>
         </div>
         """, unsafe_allow_html=True)
         
@@ -114,7 +118,7 @@ with col_payment:
         
         live_explainer = shap.TreeExplainer(model)
         calculated_shap_values = live_explainer(live_inputs)
-        calculated_shap_values.feature_names = ['Cement', 'Slag', 'Fly Ash', 'Water', 'Superplasticizer', 'Coarse Agg', 'Fine Agg', 'Age']
+        calculated_shap_values.feature_names = ['Cement', 'Blast Furnace Slag', 'Fly Ash Substitution', 'Water Content', 'Superplasticizer Admixture', 'Coarse Aggregate', 'Fine Aggregate', 'Curing Age Days']
         
         fig, ax = plt.subplots(figsize=(10, 4))
         shap.plots.waterfall(calculated_shap_values[0], max_display=8, show=False)
