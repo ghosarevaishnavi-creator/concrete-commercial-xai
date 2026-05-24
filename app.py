@@ -264,6 +264,32 @@ with col_payment:
         st.subheader("📘 Detailed Explanation & Recommendations")
         st.write(detailed_text)
 
+        # ---- Results Section (concise, specific) ----
+        result_lines = []
+        result_lines.append(f"Predicted 28-day compressive strength: {predicted:.2f} MPa")
+        if base_value is not None:
+            result_lines.append(f"Model baseline (expected average): {base_value:.2f} MPa")
+            result_lines.append(f"Net effect (prediction - baseline): {net_effect:.2f} MPa")
+
+        # top contributors list (ordered)
+        top_list = [f"{r.feature}: {r.shap_value:.2f} MPa ({r.pct_contrib:.1f}%)" for r in df_shap.head(5).itertuples()]
+        result_lines.append("Top feature contributions:")
+        result_lines.extend([f"- {t}" for t in top_list])
+
+        st.subheader("✅ Results")
+        for line in result_lines:
+            st.write(line)
+
+        # ---- Conclusion Section (actionable, short) ----
+        conclusion_lines = []
+        conclusion_lines.append("Conclusion:")
+        conclusion_lines.append("- The predicted mix meets/does not meet common benchmark targets depending on project spec; check required strength thresholds.")
+        conclusion_lines.append("- If early-age strength is critical, prioritize lowering water content and ensuring proper curing.")
+        conclusion_lines.append("- For long-term durability, consider supplementary cementitious materials (fly ash/slag) while validating early-age performance.")
+        conclusion_text = "\n".join(conclusion_lines)
+        st.subheader("📌 Conclusion")
+        st.write(conclusion_text)
+
         # Contribution bar chart
         fig2, ax2 = plt.subplots(figsize=(8, 4))
         plot_df = df_shap.copy()
