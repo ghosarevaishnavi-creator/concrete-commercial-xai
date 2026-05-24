@@ -193,19 +193,23 @@ if access_key == "VG40":
             canvas_obj.text(0.08, 0.03, "Official Certification Seal: Authorized Digital Concrete Interpretation Signature", fontsize=7.5, color='#4A5568', fontweight='bold')
             canvas_obj.text(0.92, 0.03, f"Page {current_page_str}", fontsize=8, color='#4A5568', ha='right')
 
-        def render_justified_block(canvas_obj, text_str, start_y, line_width=66):
+        def render_justified_block(canvas_obj, text_str, start_y, line_width=58):
             wrapped = textwrap.wrap(text_str, width=line_width)
             c_y = start_y
             for line in wrapped:
-                # Upgraded to 13pt professional font styling with a wider vertical track step (0.029)
+                # Upgraded to crisp 13pt professional layout font
+                # Expanded c_y step interval to 0.040 to thoroughly avoid line collisions/merging
                 canvas_obj.text(0.08, c_y, line, fontsize=13, color='#1E293B', ha='left')
-                c_y -= 0.029
+                c_y -= 0.040
             return c_y
 
         # --- PAGE 1: MIX PARAMETERS & ALGORITHMIC STRENGTH FORECAST ---
         apply_decorations(fig_p1, "1 of 3")
         fig_p1.text(0.08, 0.91, "CONCRETE XAI-SHAP REPORT PDF", fontsize=16, fontweight='bold', color='#1E3A8A')
-        fig_p1.text(0.08, 0.87, "SECTION 1: STRUCTURAL ANALYSIS, PREDICTIONS & CRITERIA VALIDATION", fontsize=11, fontweight='bold', color='#0F172A')
+        
+        y = 0.86
+        fig_p1.text(0.08, y, "SECTION 1: STRUCTURAL ANALYSIS, PREDICTIONS & CRITERIA VALIDATION", fontsize=11, fontweight='bold', color='#0F172A')
+        y -= 0.03
         
         p1_intro = (
             f"This professional engineering ledger details the analytical evaluation compiled for concrete strength class {target_class}. "
@@ -213,7 +217,7 @@ if access_key == "VG40":
             f"Therefore, this framework utilizes machine learning to execute an explicit Input-to-Output mapping. By processing raw material batch ingredients "
             f"as localized multidimensional features, the model captures non-linear chemical kinetics, predicting structural output capacity with high precision."
         )
-        y = render_justified_block(fig_p1, p1_intro, 0.83) - 0.03
+        y = render_justified_block(fig_p1, p1_intro, y) - 0.04
         
         fig_p1.text(0.08, y, "1.1 Input Constituent Batch Parameters", fontsize=11, fontweight='bold', color='#0F172A')
         summary_txt = (
@@ -261,7 +265,7 @@ if access_key == "VG40":
             f"On a microscopic scale, this is achieved via chemical consumption of liberated free calcium hydroxide crystals generated during early hydration cycles. "
             f"The model tracks this pozzolanic conversion as it forms dense secondary Calcium-Silicate-Hydrate (C-S-H) crystalline networks that structurally reinforce structural micro-void spaces."
         )
-        y = render_justified_block(fig_p2, p2_mech_1, y) - 0.04
+        y = render_justified_block(fig_p2, p2_mech_1, y) - 0.05
 
         p2_mech_2 = (
             f"Conversely, Fly Ash Substitution introduces a localized early-age hydration latency, requiring an attribution index adjustment of {shap_values[6]:.2f} MPa. "
