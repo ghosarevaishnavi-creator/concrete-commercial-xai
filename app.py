@@ -61,9 +61,21 @@ with col_inputs:
     val_7 = st.slider("Fine Aggregate Matrix (kg/m³)", 500.0, 1000.0, 740.0, step=10.0)
     val_8 = st.slider("Target Structure Curing Horizon (Days)", 1, 365, 28)
 
-    # Convert sliders directly into a structured DataFrame matching your XGBoost features
-    live_inputs = pd.DataFrame([[val_1, val_2, val_3, val_4, val_5, val_6, val_7, val_8]],
-                              columns=['Cement', 'Blast_Furnace_Slag', 'Fly_Ash', 'Water', 'Superplasticizer', 'Coarse_Aggregate', 'Fine_Aggregate', 'Age'])
+    # Build the DataFrame with the exact feature names the model expects.
+    # This keeps the UI slider labels user-friendly while feeding the model its original training names.
+    training_feature_names = [
+        'Cement (component 1)(kg in a m^3 mixture)',
+        'Blast Furnace Slag (component 2)(kg in a m^3 mixture)',
+        'Fly Ash (component 3)(kg in a m^3 mixture)',
+        'Water  (component 4)(kg in a m^3 mixture)',
+        'Superplasticizer (component 5)(kg in a m^3 mixture)',
+        'Coarse Aggregate  (component 6)(kg in a m^3 mixture)',
+        'Fine Aggregate (component 7)(kg in a m^3 mixture)',
+        'Age (day)'
+    ]
+
+    values = [val_1, val_2, val_3, val_4, val_5, val_6, val_7, val_8]
+    live_inputs = pd.DataFrame([values], columns=training_feature_names)
 
 # 5. Right Panel: Monetization and XAI Analytics Engine
 with col_payment:
