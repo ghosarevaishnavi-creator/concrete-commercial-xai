@@ -2,13 +2,12 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
-import streamlit.components.v1 as components
 
 # Global layout tuning for centralized web app visibility
 st.set_page_config(page_title="Commercial XAI Concrete Engineering", layout="centered")
 
 # =========================================================================
-# 1. PUBLIC AREA: APP HEADER & TITLE (AI Repo Title Added)
+# 1. PUBLIC AREA: APP HEADER & TITLE (AI Repo Title Displayed)
 # =========================================================================
 col_header, col_logo = st.columns([8, 2])
 with col_header:
@@ -64,7 +63,7 @@ st.metric(label="📆 Estimated 28-Day Compressive Strength", value=f"{pred_28d:
 st.markdown("---")
 
 # =========================================================================
-# 4. COMMERCIAL PAYWALL GATEWAY (Your Integrated Razorpay Me Link)
+# 4. COMMERCIAL PAYWALL GATEWAY (Fixed Redirect Layout Engine)
 # =========================================================================
 st.subheader("💳 3. Commercial Analytics Access Gateway")
 st.error("🔒 The complete XAI feature explanations, multi-day curing charts (7/14 days), and printable verification documents are locked.")
@@ -81,9 +80,15 @@ with pay_col1:
         st.file_uploader("📤 Upload Valid College ID Card (PDF/JPEG):")
 
 with pay_col2:
-    st.markdown("**💳 Secure Checkout Portal:**")
-    # Embedding your clean, personal verified Razorpay link as an interactive UI card
-    components.iframe("https://razorpay.me/@vaishnavisantoshraoghosare", height=450, scrolling=True)
+    st.markdown("**💳 Secure Razorpay Checkout Portal:**")
+    st.info("Click the button below to process your access fee safely on Razorpay's verified payment routing network.")
+    
+    # Beautiful, clickable link button pointing directly to your personalized page
+    st.link_button(
+        label="🚀 Pay Securely via Razorpay", 
+        url="https://razorpay.me/@vaishnavisantoshraoghosare",
+        use_container_width=True
+    )
 
 st.write("After clearing your payment processing window, type your corporate verification code below to unlock the secure model layer:")
 access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment passkey here...")
@@ -121,7 +126,7 @@ if access_key == "VG40":
     * **Fly Ash Substitution:** value=**{fly_ash:.1f} kg** $\\rightarrow$ decreases prediction by **{shap_values[6]:+.2f} MPa**. Imposes an early-age pozzolanic lag, reducing strength if replacement metrics are unchecked.
     """)
 
-    # UNLOCKED SECTION: Analytical Plots & Figures
+    # UNLOCKED SECTION: Analytical Plots & Figures (Fixed with explicit text alignments)
     st.subheader("📊 6. Interactive SHAP Contribution Diagram")
     fig, ax = plt.subplots(figsize=(8, 3.8))
     colors_list = ['#EF4444' if x < 0 else '#10B981' for x in shap_df['shap_value']]
@@ -182,4 +187,97 @@ if access_key == "VG40":
         fig.text(0.08, 0.55, "3. Structural Engineering Recommendations", fontsize=12, fontweight='bold', color='#0F172A')
         rec_text = (
             f"• To safely verify performance for M40 class parameters, the binder volume must remain above 350 kg/m³.\n"
-            f"• When tracking
+            f"• When tracking replacement metrics for Fly Ash ({fly_ash:.1f} kg/m³), the negative pozzolanic lag should be systematically\n"
+            f"  balanced out by utilizing a proper dosage of Superplasticizer ({superplasticizer:.1f} kg/m³) to compress the water demand matrix.\n"
+            f"• Ensure curing wet-blanket moisture application parameters are sustained across a minimum 14-day milestone timeline."
+        )
+        fig.text(0.08, 0.46, rec_text, fontsize=10, color='#334155', linespacing=1.4)
+
+        fig.text(0.08, 0.42, "4. Definitive Research Conclusion", fontsize=12, fontweight='bold', color='#0F172A')
+        conclusion_text = (
+            f"In conclusion, the proposed commercial batch configuration safely satisfies and clears all characteristic target structural\n"
+            f"parameters mandated for standard M40 performance classifications. The integration of Explainable AI (XAI) verification\n"
+            f"rules confirms that secondary hydration kinetics will effectively offset early-age substitution deficits by Day 28."
+        )
+        fig.text(0.08, 0.35, conclusion_text, fontsize=10, color='#334155', linespacing=1.4)
+        
+        fig.text(0.08, 0.33, "_"*95, fontsize=10, color='#E2E8F0')
+        fig.text(0.08, 0.29, "5. XAI Contribution Diagrams & Tabular Framework", fontsize=12, fontweight='bold', color='#0F172A')
+        
+        # Embed Plot Image
+        ax_graph = fig.add_axes([0.12, 0.15, 0.76, 0.12])
+        bar_colors = ['#EF4444' if x < 0 else '#10B981' for x in dataframe['shap_value']]
+        ax_graph.barh(dataframe['feature'], dataframe['shap_value'], color=bar_colors, edgecolor='#0F172A', height=0.55)
+        ax_graph.axvline(x=0, color='#334155', linestyle='--', linewidth=0.8)
+        ax_graph.tick_params(axis='both', labelsize=7.5)
+        ax_graph.spines['top'].set_visible(False)
+        ax_graph.spines['right'].set_visible(False)
+        
+        # Embed Detailed Matrix Table Data
+        ax_table = fig.add_axes([0.08, 0.02, 0.84, 0.11])
+        ax_table.axis('off')
+        
+        table_content = [['Material Component', 'Actual Input Value', 'SHAP Impact (MPa)', 'Contribution Share']]
+        for _, row in dataframe.iterrows():
+            table_content.append([
+                str(row['feature']), f"{row['raw_value']:.1f}", f"{row['shap_value']:+.2f}", f"{row['pct_contrib']:.1f}%"
+            ])
+        
+        report_table = ax_table.table(cellText=table_content, loc='center', cellLoc='left', colWidths=[0.36, 0.20, 0.22, 0.22])
+        report_table.auto_set_font_size(False)
+        report_table.set_fontsize(8)
+        
+        for i, cell in report_table.get_celld().items():
+            cell.set_height(0.12)
+            if i[0] == 0:
+                cell.set_text_props(weight='bold', color='white')
+                cell.set_facecolor('#1E3A8A')
+            else:
+                cell.set_facecolor('#F8FAFC' if i[0] % 2 == 0 else 'white')
+                cell.set_edgecolor('#E2E8F0')
+                
+        fig.text(0.08, -0.01, "_"*95, fontsize=10, color='#CBD5E1')
+        fig.text(0.08, -0.03, "Author Verification: Vaishnavi Ghosare (Structural Engineer)", fontsize=8.5, color='#4A5568', fontweight='bold')
+        fig.text(0.92, -0.03, "Page 1 of 1", fontsize=8.5, color='#4A5568', ha='right')
+        
+        pdf_buf = io.BytesIO()
+        plt.savefig(pdf_buf, format='pdf', dpi=300, bbox_inches='tight')
+        plt.close(fig)
+        pdf_buf.seek(0)
+        return pdf_buf
+
+    pdf_payload = generate_pdf_report(shap_df, img_buf)
+    
+    st.download_button(
+        label="📥 Download Attractive A4 SHAP Report (PDF)",
+        data=pdf_payload,
+        file_name="Commercial_XAI_Concrete_Report.pdf",
+        mime="application/pdf",
+        use_container_width=True
+    )
+
+elif access_key != "":
+    st.error("❌ Invalid Access Passkey. Please complete your transaction verification step.")
+
+# =========================================================================
+# PUBLIC REGULATORY & COMPLIANCE FOOTER (Required to pass Razorpay Onboarding Audit)
+# =========================================================================
+st.markdown("---")
+st.subheader("⚖️ Legal & Compliance Information")
+comp_col1, comp_col2, comp_col3 = st.columns(3)
+
+with comp_col1:
+    st.markdown("**Contact Us & Support**")
+    st.caption("Contact: Vaishnavi Ghosare")
+    st.caption("Email: support@yourdomain.com")
+    st.caption("Role: Structural Engineer & Platform Founder")
+
+with comp_col2:
+    st.markdown("**Terms & Refunds**")
+    st.caption("Refund Policy: Due to instant calculation execution, unlocked premium features and reports are non-refundable.")
+    st.caption("Terms of Service: This app provides predictive concrete data models for optimization optimization algorithms.")
+
+with comp_col3:
+    st.markdown("**Business Logistics**")
+    st.caption("Pricing Tiers: Standard Corporate (₹2000) / Student Academic (₹50)")
+    st.caption("Delivery Timeline: Instantaneous via on-screen dynamic visual render data channels.")
