@@ -5,6 +5,8 @@ import xgboost as xgb
 import joblib
 import shap
 import matplotlib.pyplot as plt
+import io
+from matplotlib.backends.backend_pdf import PdfPages
 
 # 1. Web Page Layout Configurations
 st.set_page_config(page_title="Commercial XAI Concrete Engine", page_icon="🏗️", layout="wide")
@@ -164,7 +166,13 @@ with col_payment:
         
         # Direct the fully rendered graphic object into Streamlit safely
         st.pyplot(fig)
-        plt.close(fig)
+
+        # ---- Prepare PDF buffer for download (include waterfall + contribution chart) ----
+        pdf_buffer = io.BytesIO()
+        # Save the waterfall figure first into the PDF
+        with PdfPages(pdf_buffer) as pdf:
+            pdf.savefig(fig)
+            plt.close(fig)
 
         # ---- Additional XAI Reporting: textual explanation + contribution bar chart ----
         shap_vals = np.array(calculated_shap_values.values[0])
@@ -204,7 +212,22 @@ with col_payment:
         ax2.set_title('Feature contributions (positive = increase prediction)')
         plt.tight_layout()
         st.pyplot(fig2)
-        plt.close(fig2)
+        # Save the contribution chart into the same PDF
+        with PdfPages(pdf_buffer) as pdf:
+            pdf.savefig(fig2)
+            plt.close(fig2)
+
+        # Add a final page with textual summary
+        summary_fig = plt.figure(figsize=(8.5, 11))
+        summary_fig.clf()
+        summary_text = f"Predicted 28-day strength: {computed_strength:.2f} MPa\n\n{why_text}"
+        summary_fig.text(0.01, 0.99, summary_text, va='top', wrap=True, fontsize=10)
+        with PdfPages(pdf_buffer) as pdf:
+            pdf.savefig(summary_fig)
+            plt.close(summary_fig)
+
+        pdf_buffer.seek(0)
+        st.download_button("📥 Download SHAP Report (PDF)", data=pdf_buffer.getvalue(), file_name="shap_report.pdf", mime="application/pdf")
 
         # Show a small table summarizing contributions
         st.subheader("📊 SHAP Contribution Summary")
