@@ -6,9 +6,10 @@ import joblib
 import shap
 import matplotlib.pyplot as plt
 
-# Web Page Configurations
+# 1. Web Page Layout Configurations
 st.set_page_config(page_title="Commercial XAI Concrete Engine", page_icon="🏗️", layout="wide")
 
+# Apply custom styling themes
 st.markdown("""
 <style>
     .reportview-container { background: #f5f7f9; }
@@ -22,6 +23,7 @@ st.markdown("### **2026 Structural Engineering Paradigm: Monetized Explainable A
 st.write("An auditable material verification engine built to predict concrete strength with complete physics transparency.")
 st.markdown("---")
 
+# 2. Safely Load the Trained XGBoost Weights
 @st.cache_resource
 def load_ai_brain():
     return joblib.load('concrete_xgboost_model.pkl')
@@ -29,16 +31,19 @@ def load_ai_brain():
 try:
     model = load_ai_brain()
 except:
-    st.error("🚨 System Error: 'concrete_xgboost_model.pkl' not detected.")
+    st.error("🚨 System Error: 'concrete_xgboost_model.pkl' not detected inside this repository folder.")
     st.stop()
 
+# Track authentication states
 if 'payment_verified' not in st.session_state:
     st.session_state.payment_verified = False
 if 'user_type' not in st.session_state:
     st.session_state.user_type = None
 
+# Create two clean main user dashboard columns
 col_inputs, col_payment = st.columns([1, 1.1])
 
+# 3. Left Panel: Input Sliders for Concrete Mix Matrix
 with col_inputs:
     st.subheader("📋 1. Enter On-Site Structural Mix Proportions")
     val_1 = st.slider("Cement Content (kg/m³)", 100.0, 550.0, 320.0, step=5.0)
@@ -50,9 +55,11 @@ with col_inputs:
     val_7 = st.slider("Fine Aggregate Matrix (kg/m³)", 500.0, 1000.0, 740.0, step=10.0)
     val_8 = st.slider("Target Structure Curing Horizon (Days)", 1, 365, 28)
 
+    # Convert sliders directly into a structured DataFrame matching your XGBoost features
     live_inputs = pd.DataFrame([[val_1, val_2, val_3, val_4, val_5, val_6, val_7, val_8]],
                               columns=['Cement', 'Blast_Furnace_Slag', 'Fly_Ash', 'Water', 'Superplasticizer', 'Coarse_Aggregate', 'Fine_Aggregate', 'Age'])
 
+# 4. Right Panel: Monetization and XAI Analytics Engine
 with col_payment:
     st.subheader("💳 2. Commercial License & Payment Gateway")
     
@@ -99,6 +106,8 @@ with col_payment:
             st.rerun()
             
         st.markdown("---")
+        
+        # 5. Core Machine Learning Calculations
         st.subheader("🔮 3. Core Structural Engineering Report")
         
         computed_strength = model.predict(live_inputs)[0]
@@ -112,12 +121,32 @@ with col_payment:
         """, unsafe_allow_html=True)
         
         st.markdown("---")
+        
+        # 6. High-Performance Transparency Audit (Fixed Rendering Pipeline)
         st.subheader("🧠 4. Transparency Audit: Detailed Physics Explanation")
         
+        # Build SHAP TreeExplainer from the live inputs
         live_explainer = shap.TreeExplainer(model)
         calculated_shap_values = live_explainer(live_inputs)
-        calculated_shap_values.feature_names = ['Cement', 'Blast Furnace Slag', 'Fly Ash Substitution', 'Water Content', 'Superplasticizer Admixture', 'Coarse Aggregate', 'Fine Aggregate', 'Curing Age Days']
         
-        fig, ax = plt.subplots(figsize=(10, 4))
+        # Give neat professional names to data variables for the chart display
+        calculated_shap_values.feature_names = [
+            'Cement Content', 'Blast Furnace Slag', 'Fly Ash Substitution', 
+            'Water Volume', 'Superplasticizer Admixture', 
+            'Coarse Aggregate', 'Fine Aggregate', 'Curing Age (Days)'
+        ]
+        
+        # Explicitly configure the Matplotlib figure canvas mapping to prevent blank outputs
+        fig, ax = plt.subplots(figsize=(10, 5))
+        
+        # Generate the waterfall chart bound directly onto our custom plot axes
         shap.plots.waterfall(calculated_shap_values[0], max_display=8, show=False)
+        
+        # Format layout boundaries to prevent clipping errors on small screens
+        plt.tight_layout()
+        
+        # Direct the fully rendered graphic object into Streamlit safely
         st.pyplot(fig)
+        
+        # Close the plot down to conserve system memory
+        plt.close(fig)
