@@ -2,12 +2,13 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import io
+import streamlit.components.v1 as components
 
-# Set up global page configuration with clear corporate layout proportions
+# Global layout tuning for centralized web app visibility
 st.set_page_config(page_title="Commercial XAI Concrete Engineering", layout="centered")
 
 # =========================================================================
-# 1. APP HEADER & PROFESSIONAL BRANDING LOGOS
+# 1. PUBLIC AREA: APP HEADER & TITLE (AI Repo Title Added)
 # =========================================================================
 col_header, col_logo = st.columns([8, 2])
 with col_header:
@@ -19,10 +20,10 @@ with col_logo:
 st.markdown("---")
 
 # =========================================================================
-# 2. MIDDLE-OF-PAGE MIX INPUT CHANNEL
+# 2. PUBLIC AREA: MIDDLE-OF-PAGE MIX INPUT CHANNEL
 # =========================================================================
-st.subheader("📋 1. Concrete Mix Design Parameters")
-st.write("Input your active structural batch weights below to compute model optimizations.")
+st.subheader("📋 1. Concrete Mix Design Parameters (Public Access)")
+st.write("Modify your structural batch weights below to compute initial 28-day estimations.")
 
 inp_col1, inp_col2 = st.columns(2)
 
@@ -41,243 +42,144 @@ with inp_col2:
 st.markdown("---")
 
 # =========================================================================
-# 3. DYNAMIC MULTI-DAY STRENGTH PREDICTION ENGINE (7, 14, 28 Days)
+# 3. PUBLIC AREA: INITIAL 28-DAY BASELINE ESTIMATION ONLY
 # =========================================================================
-# Base calculation models reflecting hydration kinetics scaled from the user input
 base_28d = 35.86 + 7.8801 + 6.5424 + 1.5131 + 1.2618 - 1.2437 + 0.6528 + 0.1636
-# Adjusting based on cement and water alterations from baseline values
 cement_factor = (cement / 380.0)
 water_factor = (165.0 / water)
 strength_modifier = cement_factor * water_factor
 
 pred_28d = base_28d * strength_modifier
-pred_14d = pred_28d * 0.90  # Standard hydration scaling factors
+pred_14d = pred_28d * 0.90  
 pred_7d  = pred_28d * 0.70
 
-# Evaluate target day for clearing M40 (40.0 MPa threshold)
-if pred_7d >= 40.0:
-    target_day_msg = "🚀 Target strength achieved rapidly by Day 7"
-elif pred_14d >= 40.0:
-    target_day_msg = "📅 Target strength achieved by Day 14"
-elif pred_28d >= 40.0:
+if pred_28d >= 40.0:
     target_day_msg = "⏱️ Target strength fully validated at Day 28"
 else:
     target_day_msg = "⚠️ Mix requires adjustment to clear the M40 threshold safely"
 
-# Display Multi-Day Prediction Dashboard Matrix
-st.subheader("📊 2. Dynamic Compressive Strength Prediction Summary")
-m_col1, m_col2, m_col3 = st.columns(3)
-m_col1.metric(label="📆 7-Day Compressive Strength", value=f"{pred_7d:.2f} MPa")
-m_col2.metric(label="📆 14-Day Compressive Strength", value=f"{pred_14d:.2f} MPa")
-m_col3.metric(label="📆 28-Day Target Strength (M40 Requirement)", value=f"{pred_28d:.2f} MPa")
-st.info(f"**Verification Status for {target_class}:** {target_day_msg}")
+st.subheader("📊 2. Algorithmic Strength Forecast")
+st.metric(label="📆 Estimated 28-Day Compressive Strength", value=f"{pred_28d:.2f} MPa")
 
 st.markdown("---")
 
 # =========================================================================
-# 4. FIXED SHAP DATA GENERATION ENGINE
+# 4. COMMERCIAL PAYWALL GATEWAY (Your Integrated Razorpay Me Link)
 # =========================================================================
-features = [
-    "Blast Furnace Slag", "Cement Content", "Superplasticizer Admixture", 
-    "Fine Aggregate", "Water Volume", "Coarse Aggregate", "Fly Ash Substitution"
-]
-raw_inputs_mapped = [slag, cement, superplasticizer, fine_agg, water, coarse_agg, fly_ash]
-shap_values = [7.8801 * cement_factor, 6.5424 * cement_factor, 1.5131, 1.2618, 0.6528, 0.1636, -1.2437 * (fly_ash/45.0 if fly_ash > 0 else 0)]
-pct_contribs = [32.07, 26.62, 6.15, 5.13, 2.65, 0.66, 5.06]
-
-shap_df = pd.DataFrame({
-    'feature': features,
-    'raw_value': raw_inputs_mapped,
-    'shap_value': shap_values,
-    'pct_contrib': pct_contribs
-}).sort_values(by='shap_value', ascending=False)
-
-# =========================================================================
-# 5. RESTORED GRAPHICS AND BULLET ANALYSIS SCREEN VIEW
-# =========================================================================
-st.subheader("💡 3. XAI Recommendations & Performance Analysis")
-st.markdown(f"**Executive summary:** predicted 28-day strength = **{pred_28d:.2f} MPa**, net feature effect = **{sum(shap_values):+.2f} MPa**")
-
-st.markdown(f"""
-* **Blast Furnace Slag:** value=**{slag:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[0]:+.2f} MPa**. Slag acts as a secondary catalytic engine, consuming free calcium hydroxide to optimize long-term matrix structure.
-* **Cement Content:** value=**{cement:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[1]:+.2f} MPa**. This is the primary binder providing tricalcium silicate (C3S) hydration.
-* **Superplasticizer Admixture:** value=**{superplasticizer:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[2]:+.2f} MPa**. Improves workability to allow a lower water-cement ratio.
-* **Fly Ash Substitution:** value=**{fly_ash:.1f} kg** $\\rightarrow$ decreases prediction by **{shap_values[6]:+.2f} MPa**. Imposes an early-age pozzolanic lag, reducing strength if replacement metrics are unchecked.
-""")
-
-# Render Interactive Screen Graph
-fig, ax = plt.subplots(figsize=(8, 3.8))
-colors_list = ['#EF4444' if x < 0 else '#10B981' for x in shap_df['shap_value']]
-bars = ax.barh(shap_df['feature'], shap_df['shap_value'], color=colors_list, edgecolor='#0F172A', height=0.55)
-ax.set_xlabel('SHAP value (MPa contribution impact against baseline)', fontsize=9)
-ax.axvline(x=0, color='#334155', linestyle='--', linewidth=0.8)
-
-# Add clear numerical flags to bar chart elements
-for bar in bars:
-    width = bar.get_width()
-    ax.text(width + (0.1 if width >= 0 else -0.7), bar.get_y() + bar.get_height()/2, 
-            f'{width:+.2f} MPa', va='center', ha='left', fontsize=8, fontweight='bold')
-
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-plt.tight_layout()
-st.pyplot(fig)
-
-# Save chart image out to memory buffer asset
-img_buf = io.BytesIO()
-plt.savefig(img_buf, format='png', dpi=300, bbox_inches='tight')
-img_buf.seek(0)
-
-st.markdown("---")
-
-# =========================================================================
-# 6. EXACT A4-SIZED TIMES NEW ROMAN REPORT ENGINE WITH ENHANCED ANALYSIS
-# =========================================================================
-def generate_pdf_report(dataframe, figure_bytes):
-    plt.rcParams['font.family'] = 'serif'
-    plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
-    
-    # Configure precise standard A4 page dimensions (8.27 in x 11.69 in)
-    fig = plt.figure(figsize=(8.27, 11.69))
-    
-    # Running Header Section
-    fig.text(0.08, 0.95, "Repository: Concrete-Commercial-XAI-Frameworks", fontsize=9, color='#4A5568', fontstyle='italic')
-    fig.text(0.92, 0.95, "VG ENGINE", fontsize=12, fontweight='bold', color='#1E3A8A', ha='right')
-    fig.text(0.08, 0.94, "_"*95, fontsize=10, color='#CBD5E1')
-    
-    # Document Title Block
-    fig.text(0.08, 0.90, "AI-BASED SHAP CONCRETE INTERPRETABILITY REPORT", fontsize=18, fontweight='bold', color='#1E3A8A')
-    
-    # Author Block
-    fig.text(0.08, 0.87, "AUTHOR: VAISHNAVI GHOSARE (STRUCTURAL ENGINEER)", fontsize=11, fontweight='bold', color='#0F172A')
-    
-    # --- PROPER INPUT / OUTPUT SUMMARY START SECTION ---
-    fig.text(0.08, 0.84, "1. Executive Structural Batch & Prediction Summary", fontsize=12, fontweight='bold', color='#0F172A')
-    summary_box_text = (
-        f"Design Mix Recipe Inputs:\n"
-        f"  • Cement Content: {cement:.1f} kg/m³        • Blast Furnace Slag: {slag:.1f} kg/m³       • Fly Ash: {fly_ash:.1f} kg/m³\n"
-        f"  • Water Volume: {water:.1f} Liters/m³        • Superplasticizer: {superplasticizer:.1f} kg/m³     • Coarse Agg: {coarse_agg:.1f} kg/m³\n\n"
-        f"Multi-Day Compressive Strength Predictions via Model Matrix Execution:\n"
-        f"  • 7-Day Hydration Yield: {pred_7d:.2f} MPa\n"
-        f"  • 14-Day Hydration Yield: {pred_14d:.2f} MPa\n"
-        f"  • 28-Day Target Strength: {pred_28d:.2f} MPa ({target_class} Verification Requirement)\n"
-        f"  • Target Compliance Status: {target_day_msg.replace('⏱️ ', '').replace('🚀 ', '').replace('📅 ', '')}"
-    )
-    fig.text(0.08, 0.70, summary_box_text, fontsize=10, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
-
-    # --- RESULT SECTION ---
-    fig.text(0.08, 0.66, "2. Quantitative SHAP Analytics Result", fontsize=12, fontweight='bold', color='#0F172A')
-    result_text = (
-        f"The additive model calculation registers a final 28-day compressive output configuration of {pred_28d:.2f} MPa.\n"
-        f"The core baseline starting index is 35.86 MPa. Blast Furnace Slag demonstrates the highest positive correlation\n"
-        f"thrust driving the structural limit upwards. Conversely, Fly Ash Substitution introduces a localized early-age pozzolanic\n"
-        f"lag factor, which reduces the early framework by causing a minor negative SHAP parameter shift."
-    )
-    fig.text(0.08, 0.59, result_text, fontsize=10, color='#334155', linespacing=1.4)
-
-    # --- RECOMMENDATION SECTION ---
-    fig.text(0.08, 0.55, "3. Structural Engineering Recommendations", fontsize=12, fontweight='bold', color='#0F172A')
-    rec_text = (
-        f"• To safely verify performance for M40 class parameters, the binder volume must remain above 350 kg/m³.\n"
-        f"• When tracking replacement metrics for Fly Ash ({fly_ash:.1f} kg/m³), the negative pozzolanic lag should be systematically\n"
-        f"  balanced out by utilizing a proper dosage of Superplasticizer ({superplasticizer:.1f} kg/m³) to compress the water demand matrix.\n"
-        f"• Ensure curing wet-blanket moisture application parameters are sustained across a minimum 14-day milestone timeline."
-    )
-    fig.text(0.08, 0.46, rec_text, fontsize=10, color='#334155', linespacing=1.4)
-
-    # --- CONCLUSION SECTION ---
-    fig.text(0.08, 0.42, "4. Definitive Research Conclusion", fontsize=12, fontweight='bold', color='#0F172A')
-    conclusion_text = (
-        f"In conclusion, the proposed commercial batch configuration safely satisfies and clears all characteristic target structural\n"
-        f"parameters mandated for standard M40 performance classifications. The integration of Explainable AI (XAI) verification\n"
-        f"rules confirms that secondary hydration kinetics will effectively offset early-age substitution deficits by Day 28."
-    )
-    fig.text(0.08, 0.35, conclusion_text, fontsize=10, color='#334155', linespacing=1.4)
-    
-    fig.text(0.08, 0.33, "_"*95, fontsize=10, color='#E2E8F0')
-    
-    # --- GRAPHICAL INTERPRETABILITY SEGMENT (50% VISUAL PART) ---
-    fig.text(0.08, 0.29, "5. XAI Contribution Diagrams & Tabular Framework", fontsize=12, fontweight='bold', color='#0F172A')
-    
-    # Embed horizontal vector chart
-    ax_graph = fig.add_axes([0.12, 0.15, 0.76, 0.12])
-    bar_colors = ['#EF4444' if x < 0 else '#10B981' for x in dataframe['shap_value']]
-    ax_graph.barh(dataframe['feature'], dataframe['shap_value'], color=bar_colors, edgecolor='#0F172A', height=0.55)
-    ax_graph.axvline(x=0, color='#334155', linestyle='--', linewidth=0.8)
-    ax_graph.tick_params(axis='both', labelsize=7.5)
-    ax_graph.spines['top'].set_visible(False)
-    ax_graph.spines['right'].set_visible(False)
-    
-    # Clean Data Matrix Table
-    ax_table = fig.add_axes([0.08, 0.02, 0.84, 0.11])
-    ax_table.axis('off')
-    
-    table_content = [['Material Component', 'Actual Input Value', 'SHAP Impact (MPa)', 'Contribution Share']]
-    for _, row in dataframe.iterrows():
-        table_content.append([
-            str(row['feature']), f"{row['raw_value']:.1f}", f"{row['shap_value']:+.2f}", f"{row['pct_contrib']:.1f}%"
-        ])
-    
-    report_table = ax_table.table(cellText=table_content, loc='center', cellLoc='left', colWidths=[0.36, 0.20, 0.22, 0.22])
-    report_table.auto_set_font_size(False)
-    report_table.set_fontsize(8)
-    
-    for i, cell in report_table.get_celld().items():
-        cell.set_height(0.12)
-        if i[0] == 0:
-            cell.set_text_props(weight='bold', color='white')
-            cell.set_facecolor('#1E3A8A')
-        else:
-            cell.set_facecolor('#F8FAFC' if i[0] % 2 == 0 else 'white')
-            cell.set_edgecolor('#E2E8F0')
-            
-    # Running Footer Section
-    fig.text(0.08, -0.01, "_"*95, fontsize=10, color='#CBD5E1')
-    fig.text(0.08, -0.03, "Author Verification: Vaishnavi Ghosare (Structural Engineer)", fontsize=8.5, color='#4A5568', fontweight='bold')
-    fig.text(0.92, -0.03, "Page 1 of 1", fontsize=8.5, color='#4A5568', ha='right')
-    
-    pdf_buf = io.BytesIO()
-    plt.savefig(pdf_buf, format='pdf', dpi=300, bbox_inches='tight')
-    plt.close(fig)
-    pdf_buf.seek(0)
-    return pdf_buf
-
-# =========================================================================
-# 7. COMMERCIAL SECURITY PAYWALL GATE & ACCESS SYSTEM
-# =========================================================================
-st.subheader("💳 4. Commercial Analytics Access Gateway")
-st.warning("⚠️ High-fidelity evaluation graphs and complete theoretical verification documents require a processed access fee.")
+st.subheader("💳 3. Commercial Analytics Access Gateway")
+st.error("🔒 The complete XAI feature explanations, multi-day curing charts (7/14 days), and printable verification documents are locked.")
 
 pay_col1, pay_col2 = st.columns(2)
 with pay_col1:
     st.markdown("""
-    **Premium Tier Breakdown:**
+    **Premium Account Analytics Tiers:**
     * **Industrial Standard Fee:** ₹2,000 INR
-    * **Verified Academic Discount:** ₹50 INR *(Requires valid Student ID card configuration)*
+    * **Verified Academic Discount:** ₹50 INR *(Requires Student ID configuration)*
     """)
-with pay_col2:
-    user_tier = st.radio("Select Corporate Account Tier:", ["Industrial Professional (₹2000)", "Academic Student (₹50)"])
+    user_tier = st.radio("Select Your Account Tier:", ["Industrial Professional (₹2000)", "Academic Student (₹50)"])
     if user_tier == "Academic Student (₹50)":
         st.file_uploader("📤 Upload Valid College ID Card (PDF/JPEG):")
 
-st.write("To simulate payment clearance and unlock the presentation-ready A4 SHAP Analysis Report, enter your transaction verification code below:")
+with pay_col2:
+    st.markdown("**💳 Secure Checkout Portal:**")
+    # Embedding your clean, personal verified Razorpay link as an interactive UI card
+    components.iframe("https://razorpay.me/@vaishnavisantoshraoghosare", height=450, scrolling=True)
 
-access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment verification key here...")
+st.write("After clearing your payment processing window, type your corporate verification code below to unlock the secure model layer:")
+access_key = st.text_input("🔑 Enter Access Passkey:", value="", type="password", placeholder="Type payment passkey here...")
 
+# =========================================================================
+# 5. LOCKED PREMIUM CONTENT LAYER (Accessible only via verification token)
+# =========================================================================
 if access_key == "VG40":
-    st.success("✅ Payment successfully cleared! Premium analysis download tools are now unlocked.")
+    st.success("✅ Access token authorized! Loading deep technical analysis tools...")
     
-    # Process the custom PDF document stream layout
-    pdf_payload = generate_pdf_report(shap_df, img_buf)
-    
-    st.download_button(
-        label="📥 Download Attractive A4 SHAP Report (PDF)",
-        data=pdf_payload,
-        file_name="Commercial_XAI_Concrete_Report.pdf",
-        mime="application/pdf",
-        use_container_width=True
-    )
-elif access_key != "":
-    st.error("❌ Invalid Access Passkey. Please verify your billing confirmation receipt.")
-else:
-    st.info("🔒 Enter the premium verification key (**`VG40`**) above to access the secure reporting framework.")
+    # Hidden Data processing arrays
+    features = ["Blast Furnace Slag", "Cement Content", "Superplasticizer Admixture", "Fine Aggregate", "Water Volume", "Coarse Aggregate", "Fly Ash Substitution"]
+    raw_inputs_mapped = [slag, cement, superplasticizer, fine_agg, water, coarse_agg, fly_ash]
+    shap_values = [7.8801 * cement_factor, 6.5424 * cement_factor, 1.5131, 1.2618, 0.6528, 0.1636, -1.2437 * (fly_ash/45.0 if fly_ash > 0 else 0)]
+    pct_contribs = [32.07, 26.62, 6.15, 5.13, 2.65, 0.66, 5.06]
+
+    shap_df = pd.DataFrame({
+        'feature': features, 'raw_value': raw_inputs_mapped, 'shap_value': shap_values, 'pct_contrib': pct_contribs
+    }).sort_values(by='shap_value', ascending=False)
+
+    # UNLOCKED SECTION: Multi-Day Predictions
+    st.markdown("---")
+    st.subheader("📈 4. Premium Multi-Day Curing Kinetic Summary")
+    m_col1, m_col2 = st.columns(2)
+    m_col1.metric(label="📆 7-Day Compressive Strength", value=f"{pred_7d:.2f} MPa")
+    m_col2.metric(label="📆 14-Day Compressive Strength", value=f"{pred_14d:.2f} MPa")
+    st.info(f"**Verification Status for {target_class}:** {target_day_msg}")
+
+    # UNLOCKED SECTION: Visual Explanations & Bullet Recommendations
+    st.subheader("💡 5. XAI Component-Level Explanations")
+    st.markdown(f"""
+    * **Blast Furnace Slag:** value=**{slag:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[0]:+.2f} MPa**. Slag acts as a secondary catalytic engine, consuming free calcium hydroxide to optimize long-term matrix structure.
+    * **Cement Content:** value=**{cement:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[1]:+.2f} MPa**. This is the primary binder providing tricalcium silicate (C3S) hydration.
+    * **Superplasticizer Admixture:** value=**{superplasticizer:.1f} kg** $\\rightarrow$ increases prediction by **{shap_values[2]:+.2f} MPa**. Improves workability to allow a lower water-cement ratio.
+    * **Fly Ash Substitution:** value=**{fly_ash:.1f} kg** $\\rightarrow$ decreases prediction by **{shap_values[6]:+.2f} MPa**. Imposes an early-age pozzolanic lag, reducing strength if replacement metrics are unchecked.
+    """)
+
+    # UNLOCKED SECTION: Analytical Plots & Figures
+    st.subheader("📊 6. Interactive SHAP Contribution Diagram")
+    fig, ax = plt.subplots(figsize=(8, 3.8))
+    colors_list = ['#EF4444' if x < 0 else '#10B981' for x in shap_df['shap_value']]
+    bars = ax.barh(shap_df['feature'], shap_df['shap_value'], color=colors_list, edgecolor='#0F172A', height=0.55)
+    ax.set_xlabel('SHAP value (MPa contribution impact against baseline)', fontsize=9)
+    ax.axvline(x=0, color='#334155', linestyle='--', linewidth=0.8)
+
+    for bar in bars:
+        width = bar.get_width()
+        ax.text(width + (0.1 if width >= 0 else -0.8), bar.get_y() + bar.get_height()/2, 
+                f'{width:+.2f} MPa', va='center', ha='left', fontsize=8, fontweight='bold')
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    plt.tight_layout()
+    st.pyplot(fig)
+
+    # Save to memory buffer
+    img_buf = io.BytesIO()
+    plt.savefig(img_buf, format='png', dpi=300, bbox_inches='tight')
+    img_buf.seek(0)
+
+    # UNLOCKED SECTION: Clean A4 PDF Report Generation Engine
+    def generate_pdf_report(dataframe, figure_bytes):
+        plt.rcParams['font.family'] = 'serif'
+        plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
+        fig = plt.figure(figsize=(8.27, 11.69))
+        
+        fig.text(0.08, 0.95, "Repository: Concrete-Commercial-XAI-Frameworks", fontsize=9, color='#4A5568', fontstyle='italic')
+        fig.text(0.92, 0.95, "VG ENGINE", fontsize=12, fontweight='bold', color='#1E3A8A', ha='right')
+        fig.text(0.08, 0.94, "_"*95, fontsize=10, color='#CBD5E1')
+        
+        fig.text(0.08, 0.90, "AI-BASED SHAP CONCRETE INTERPRETABILITY REPORT", fontsize=18, fontweight='bold', color='#1E3A8A')
+        fig.text(0.08, 0.87, "AUTHOR: VAISHNAVI GHOSARE (STRUCTURAL ENGINEER)", fontsize=11, fontweight='bold', color='#0F172A')
+        
+        fig.text(0.08, 0.84, "1. Executive Structural Batch & Prediction Summary", fontsize=12, fontweight='bold', color='#0F172A')
+        summary_box_text = (
+            f"Design Mix Recipe Inputs:\n"
+            f"  • Cement Content: {cement:.1f} kg/m³        • Blast Furnace Slag: {slag:.1f} kg/m³       • Fly Ash: {fly_ash:.1f} kg/m³\n"
+            f"  • Water Volume: {water:.1f} Liters/m³        • Superplasticizer: {superplasticizer:.1f} kg/m³     • Coarse Agg: {coarse_agg:.1f} kg/m³\n\n"
+            f"Multi-Day Compressive Strength Predictions via Model Matrix Execution:\n"
+            f"  • 7-Day Hydration Yield: {pred_7d:.2f} MPa\n"
+            f"  • 14-Day Hydration Yield: {pred_14d:.2f} MPa\n"
+            f"  • 28-Day Target Strength: {pred_28d:.2f} MPa ({target_class} Verification Requirement)\n"
+            f"  • Target Compliance Status: {target_day_msg.replace('⏱️ ', '').replace('🚀 ', '').replace('📅 ', '')}"
+        )
+        fig.text(0.08, 0.70, summary_box_text, fontsize=10, color='#1E293B', bbox=dict(facecolor='#F8FAFC', edgecolor='#CBD5E1', boxstyle='round,pad=1'))
+
+        fig.text(0.08, 0.66, "2. Quantitative SHAP Analytics Result", fontsize=12, fontweight='bold', color='#0F172A')
+        result_text = (
+            f"The additive model calculation registers a final 28-day compressive output configuration of {pred_28d:.2f} MPa.\n"
+            f"The core baseline starting index is 35.86 MPa. Blast Furnace Slag demonstrates the highest positive correlation\n"
+            f"thrust driving the structural limit upwards. Conversely, Fly Ash Substitution introduces a localized early-age pozzolanic\n"
+            f"lag factor, which reduces the early framework by causing a minor negative SHAP parameter shift."
+        )
+        fig.text(0.08, 0.59, result_text, fontsize=10, color='#334155', linespacing=1.4)
+
+        fig.text(0.08, 0.55, "3. Structural Engineering Recommendations", fontsize=12, fontweight='bold', color='#0F172A')
+        rec_text = (
+            f"• To safely verify performance for M40 class parameters, the binder volume must remain above 350 kg/m³.\n"
+            f"• When tracking
